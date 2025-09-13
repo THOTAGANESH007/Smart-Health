@@ -226,6 +226,79 @@ It allows administrators to manage doctors, receptionists, patients, appointment
 - Manage data backup & restore.
 - Control access permissions for sensitive operations.
 
+# 🧑‍💼 Receptionist Module – Doctor Management System
+
+The **Receptionist Module** acts as the bridge between patients and doctors.  
+Receptionists manage patient records, handle appointment scheduling, manage the patient queue, and keep both patients and doctors updated — ensuring smooth clinic/hospital operations.
+
+---
+
+## ✨ Key Features
+
+### 🔑 1. Authentication & Profile Management
+
+- Secure login with **role-based access control**.
+- Update receptionist profile (name, contact details).
+- View assigned doctors/clinics (if working in a multi-doctor setup).
+
+---
+
+### 👤 2. Patient Record Management
+
+- Register new patients with basic details:
+  - Name, age, gender, contact info
+  - Allergies & blood group (if provided)
+- Update existing patient records.
+- Search for patients by name, ID, or contact number.
+
+---
+
+### 📅 3. Appointment Scheduling
+
+- Book appointments on behalf of patients (walk-in or phone calls).
+- Reschedule or cancel appointments when required.
+- Assign patients to doctors based on specialization & availability.
+- Ensure no double-booking or overlap in appointments.
+
+---
+
+### 🪑 4. Queue Management
+
+- Maintain **real-time patient queue**.
+- Mark patient status as:
+  - Waiting
+  - In Consultation
+  - Completed
+- Update doctors on patient readiness.
+- Handle priority cases (emergency patients).
+
+---
+
+### 🔔 5. Notifications & Communication
+
+- Notify patients about:
+  - Appointment confirmation or cancellation
+  - Doctor delays or rescheduling
+- Send reminders for upcoming appointments.
+- Notify doctors about urgent cases or walk-ins.
+
+---
+
+### 📊 6. Dashboard & Activity Tracking
+
+- View today’s appointments per doctor.
+- Track number of patients handled daily.
+- View pending and completed consultations.
+- Generate simple reports for the admin.
+
+---
+
+### ⚙️ 7. Coordination with Doctors & Admin
+
+- Inform doctors about last-minute changes.
+- Coordinate with admin for schedule updates.
+- Escalate issues like patient complaints or no-shows.
+
 ## **Technology Stack**
 
 - **Frontend:** React.js, Tailwind CSS
