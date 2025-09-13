@@ -48,6 +48,81 @@
 - Rate doctors and services.
 - ML-based **sentiment analysis** to improve healthcare quality.
 
+# 👨‍⚕️ Doctor Module – Doctor Management System
+
+The **Doctor Module** is the core component where doctors manage appointments, review patient histories, validate AI-generated recommendations, and issue digital prescriptions.  
+It provides a streamlined, user-friendly dashboard for doctors to deliver faster and more accurate consultations.
+
+---
+
+## ✨ Key Features
+
+### 🔑 1. Authentication & Profile Management
+
+- Secure login with **role-based access control**.
+- Manage doctor profile: specialization, experience, contact info.
+- Define availability schedule (days & time slots).
+- Set consultation type (online/offline).
+
+---
+
+### 📅 2. Appointment Management
+
+- **View Appointments** in daily/weekly calendar format.
+- **Accept / Reject / Reschedule** patient appointments.
+- View real-time patient queue (powered by Socket.IO/WebSockets).
+- Mark appointments as **In Progress**, **Completed**, or **Cancelled**.
+
+---
+
+### 🩺 3. Patient History Access
+
+- View detailed patient profile:
+  - Basic info (age, gender, allergies)
+  - Past medical history & prescriptions
+  - Uploaded lab reports
+- Quick patient search by ID or name.
+- Download or print previous prescriptions.
+
+---
+
+### 🧠 4. ML-Powered Assistance
+
+- Review **voice-to-text converted symptoms** entered by patient.
+- Get AI-suggested:
+  - Possible diseases (ranked by confidence)
+  - Recommended medicines
+- **Doctor validates** and edits before finalizing.
+- Feedback option to improve model performance over time.
+
+---
+
+### 📝 5. Digital Prescription Management
+
+- Create prescriptions digitally or auto-generate from ML suggestions.
+- Attach lab tests & medical advice.
+- Digitally sign prescriptions.
+- Store prescription automatically in patient record.
+- Notify patient when prescription is available.
+
+---
+
+### 💬 6. Patient Communication
+
+- Send follow-up reminders or medical advice.
+- Secure communication through notifications or email.
+- Notify patient if appointment needs rescheduling.
+
+---
+
+### 📊 7. Doctor Dashboard & Analytics
+
+- View:
+  - Total patients for the day/week.
+  - Pending, confirmed, and completed consultations.
+  - Disease trends & most common cases.
+- Export reports for hospital administration.
+
 ## **Technology Stack**
 
 - **Frontend:** React.js, Tailwind CSS
@@ -56,3 +131,7 @@
 - **Authentication:** JWT / OAuth2
 - **ML Tools:** Python (scikit-learn, TensorFlow, PyTorch)
 - **Notifications:** Firebase / Twilio
+- **Real-Time Updates** | Socket.IO |
+- **PDF Prescription** | reportlab / docx |
+- **Voice-to-Text** | OpenAI Whisper / Google Speech-to-Text |
+- **ML Model** | Fine-tuned BERT / DistilBERT for symptom-disease prediction |
