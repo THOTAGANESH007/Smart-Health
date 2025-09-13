@@ -123,15 +123,119 @@ It provides a streamlined, user-friendly dashboard for doctors to deliver faster
   - Disease trends & most common cases.
 - Export reports for hospital administration.
 
+# 🛠️ Admin Module – Doctor Management System
+
+The **Admin Module** is the control center of the Doctor Management System.  
+It allows administrators to manage doctors, receptionists, patients, appointments, notifications, and system-wide settings — ensuring smooth operations across the entire platform.
+
+---
+
+## ✨ Key Features
+
+### 🔑 1. Authentication & Role Management
+
+- Secure **Admin login** with elevated privileges.
+- Create and manage roles:
+  - **Doctor**
+  - **Receptionist**
+  - **Patient**
+- Activate/deactivate user accounts when needed.
+
+---
+
+### 👨‍⚕️ 2. Doctor Management
+
+- Add new doctors with details:
+  - Name, specialization, experience
+  - Availability schedule
+  - Consultation type (online/offline)
+- Update or remove doctor profiles.
+- Monitor doctor performance (appointments completed, patient feedback).
+
+---
+
+### 🧑‍💼 3. Receptionist Management
+
+- Create and manage receptionist accounts.
+- Assign receptionists to specific doctors/clinics.
+- Track appointment activity handled by each receptionist.
+
+---
+
+### 👤 4. Patient Management
+
+- View and manage patient profiles.
+- Access complete patient history (only for authorized admin use).
+- Option to delete or deactivate patient accounts if needed.
+
+---
+
+### 📅 5. Appointment Oversight
+
+- View all appointments across doctors and receptionists.
+- Filter by:
+  - Doctor
+  - Date range
+  - Status (pending, confirmed, completed)
+- Force-cancel or reassign appointments if necessary.
+
+---
+
+### ⚙️ 6. System Configuration
+
+- Manage clinic/hospital profile (name, address, logo).
+- Configure:
+  - Working hours
+  - Holidays
+  - Appointment rules (e.g., max patients per day)
+- Manage notification templates (appointment confirmation, reminders).
+
+---
+
+### 📊 7. Analytics & Reports
+
+- View key metrics on admin dashboard:
+  - Total number of doctors, receptionists, and patients
+  - Appointments booked per day/week/month
+  - Most common diseases (from prescriptions)
+- Export reports in CSV/PDF for management use.
+
+---
+
+### 🧠 8. ML Model Monitoring
+
+- Monitor AI model performance (accuracy of disease prediction).
+- View logs of ML-suggested prescriptions.
+- Trigger model retraining by uploading new data.
+
+---
+
+### 🔔 9. Notification Management
+
+- Send **broadcast messages** to all users (e.g., clinic holiday notice).
+- Send **targeted notifications** to specific groups:
+  - All doctors
+  - All receptionists
+  - Patients of a specific doctor
+
+---
+
+### 🛡️ 10. Security & Logs
+
+- View activity logs (doctor logins, prescription edits, patient updates).
+- Manage data backup & restore.
+- Control access permissions for sensitive operations.
+
 ## **Technology Stack**
 
 - **Frontend:** React.js, Tailwind CSS
 - **Backend:** Node.js + Express.js
 - **Database:** MongoDB
-- **Authentication:** JWT / OAuth2
+- **Authentication** JWT + Role-Based Access Control, OAuth
+- **Reports** CSV/PDF generation using reportlab / jsPDF
 - **ML Tools:** Python (scikit-learn, TensorFlow, PyTorch)
 - **Notifications:** Firebase / Twilio
-- **Real-Time Updates** | Socket.IO |
-- **PDF Prescription** | reportlab / docx |
-- **Voice-to-Text** | OpenAI Whisper / Google Speech-to-Text |
-- **ML Model** | Fine-tuned BERT / DistilBERT for symptom-disease prediction |
+- **Real-Time Updates** Socket.IO
+- **PDF Prescription** reportlab / docx
+- **Voice-to-Text** OpenAI Whisper / Google Speech-to-Text
+- **ML Model** Fine-tuned BERT / DistilBERT for symptom-disease prediction
