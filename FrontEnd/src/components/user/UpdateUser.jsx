@@ -151,9 +151,9 @@ const UpdateUser = () => {
 
           <div className="space-y-6">
             {/* Profile Image Upload Section */}
-            <div className="border-2 border-gray-300 rounded-lg p-6 bg-gray-50">
+            <div className="rounded-lg p-2 ">
               <label className="block text-sm font-medium text-black mb-3">
-                Profile Picture
+               
               </label>
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
