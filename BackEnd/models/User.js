@@ -20,6 +20,9 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     is_active: { type: Boolean, default: true },
+    profile: { type: String, default: "" },
+    forgot_password_otp: { type: String, default: null },
+    forgot_password_expired: { type: Date, default: "" },
   },
   { timestamps: true }
 );

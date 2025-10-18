@@ -8,7 +8,8 @@ authorize → checks that the user’s role is allowed to access that route.
 
 export async function protect(req, res, next) {
   try {
-    const token = req.cookies.auth_token;
+    const token =
+      req.cookies.auth_token || req.headers.authorization?.split(" ")[1];
     if (!token)
       return res
         .status(401)
