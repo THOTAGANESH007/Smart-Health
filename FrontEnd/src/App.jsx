@@ -6,6 +6,7 @@ import ResetPassword from "./components/auth/ResetPassword";
 import UpdateUser from "./components/user/UpdateUser";
 import SignIn from "./components/auth/SignIn";
 import Signup from "./components/auth/Signup";
+import AnalyticsDashboard from "./components/AnalyticsDashboard";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<h1>Lets start</h1>} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/analytics" element={<AnalyticsDashboard/>}/>
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path='/signin' element={<SignIn/>}/>
         <Route path="/signup" element={<Signup/>}/>
