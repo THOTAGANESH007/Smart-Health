@@ -1,0 +1,39 @@
+http://localhost:7777/api/auth/signup  --post
+http://localhost:7777/api/auth/signin  --post
+http://localhost:7777/api/auth/signout  --post
+
+http://localhost:7777/api/auth/upload-profile  --put
+http://localhost:7777/api/auth/update-user  --put
+http://localhost:7777/api/auth/forgot-password  --put
+http://localhost:7777/api/auth/verify-forgot-password-otp  --put
+http://localhost:7777/api/auth/reset-password  --put
+
+http://localhost:7777/api/patients/get-patient/:id  --get
+http://localhost:7777/api/patients/getall-patients  --get
+http://localhost:7777/api/patients/update-patient/:id  --put
+http://localhost:7777/api/patients/delete-patient/:id  --delete
+
+http://localhost:7777/api/admin/create-user  --post
+http://localhost:7777/api/admin/add-doctor-details/:userId  --post
+http://localhost:7777/api/admin/add-receptionist-details/:userId  --post
+http://localhost:7777/api/admin/delete-doctor/:userId  --delete
+http://localhost:7777/api/admin/delete-receptionist/:userId  --delete
+http://localhost:7777/api/admin/getAllDoctors  --get
+http://localhost:7777/api/admin/doctors/:userId  --get
+http://localhost:7777/api/admin/getAllReceptionists  --get
+http://localhost:7777/api/admin/receptionists/:userId  --get
+
+http://localhost:7777/api/appointments/:doctorId  --post
+http://localhost:7777/api/appointments/getAllAppointments  --get
+http://localhost:7777/api/appointments/getDoctorAppointments --get
+http://localhost:7777/api/appointments/getPatientAppointments  --get
+http://localhost:7777/api/appointments/:appointmentId/status  --put
+
+http://localhost:7777/api/feedback/:doctorId/:appointmentId  --post
+http://localhost:7777/api/feedback/doctor/:doctorId  --get
+http://localhost:7777/api/feedback/my-feedbacks  --get
+
+http://localhost:7777/api/prescriptions/create/:patientId  --post
+http://localhost:7777/api/prescriptions/getAllPrescriptions/:patientId  --get
+http://localhost:7777/api/prescriptions/getPrescription/:prescriptionId  --get
+http://localhost:7777/api/prescriptions/download/:prescriptionId  --get

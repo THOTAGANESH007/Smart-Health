@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["ADMIN", "DOCTOR", "RECEPTIONIST", "PATIENT"],
       required: true,
+      default: "PATIENT",
     },
     is_active: { type: Boolean, default: true },
     profile: { type: String, default: "" },

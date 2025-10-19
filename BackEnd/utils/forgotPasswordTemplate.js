@@ -7,13 +7,13 @@ const forgotPasswordTemplate = ({ name, otp }) => {
   </p>
   <div style="background:yellow;font-size:20px;padding:20px;text-align:center;font-weight:700;">${otp}</div>
   <p>
-    This otp is valid for only 1 hour.Enter this otp in the Magiccu website to
+    This otp is valid for only 1 hour.Enter this otp in the Smart Health website to
     proceed with resetting your password.
   </p>
   <br />
   <br />
   <p>Thanks</p>
-  <p>Team Magiccu</p>
+  <p>Team Smart_Health</p>
 </div>`;
 };
 export default forgotPasswordTemplate;

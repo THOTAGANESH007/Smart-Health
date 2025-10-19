@@ -6,6 +6,9 @@ import generateOTP from "../utils/generateOTP.js";
 import sendEmail from "../utils/sendEmail.js";
 import forgotPasswordTemplate from "../utils/forgotPasswordTemplate.js";
 import uploadImageCloudinary from "../utils/uploadImageCloudinary.js";
+import Patient from "../models/Patient.js";
+import Doctor from "../models/Doctor.js";
+import Receptionist from "../models/Receptionist.js";
 
 // Regex for password strength validation
 const passwordRegex =
@@ -18,13 +21,13 @@ export async function signup(req, res) {
     return res.status(400).json({ errors: errors.array() });
 
   const { name, email, password, role, phone } = req.body;
+
   if (!name || !email || !password || !role || !phone) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  // Validate password strength before hashing
+  // Validate password strength
   if (!passwordRegex.test(password)) {
-    //test is a predefined function in javascript to check regex pattern
     return res.status(400).json({
       message:
         "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character",
@@ -36,7 +39,10 @@ export async function signup(req, res) {
     if (existingUser)
       return res.status(400).json({ message: "Email already exists" });
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Step 1: Create User record
     const user = await User.create({
       name,
       email,
@@ -45,10 +51,51 @@ export async function signup(req, res) {
       phone,
     });
 
-    res
-      .status(201)
-      .json({ message: "User registered successfully", userId: user._id });
+    // Step 2: Create corresponding role-based profile
+    switch (role) {
+      case "PATIENT":
+        await Patient.create({
+          userId: user._id,
+          age: null,
+          address: "",
+          disease_details: "",
+          blood_group: "",
+        });
+        break;
+      case "DOCTOR":
+        await Doctor.create({
+          userId: user._id,
+          specialization: "",
+          contact_info: phone,
+          consultation_type: "BOTH",
+          availability_schedule: {},
+        });
+        break;
+
+      case "RECEPTIONIST":
+        await Receptionist.create({
+          userId: user._id,
+          contact_info: phone,
+        });
+        break;
+
+      case "ADMIN":
+        // no separate collection needed
+        break;
+
+      default:
+        console.warn(`Unknown role: ${role}`);
+        break;
+    }
+
+    // Step 3: Send success response
+    res.status(201).json({
+      message: "User registered successfully",
+      userId: user._id,
+      role: user.role,
+    });
   } catch (err) {
+    console.error("Signup error:", err);
     res.status(500).json({ error: err.message });
   }
 }
@@ -56,12 +103,14 @@ export async function signup(req, res) {
 // Signin
 export async function signin(req, res) {
   const { email, password } = req.body;
-
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    // console.log(user);
+    if (!user) return res.status(400).json({ message: "User Not Found!" });
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     const isMatch = await bcrypt.compare(password, user.password_hash);
+    console.log(isMatch);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
@@ -94,7 +143,6 @@ export async function signout(req, res) {
 }
 
 //Forgot Password Controller
-
 export async function forgotPassword(req, res) {
   try {
     const { email } = req.body;
@@ -116,7 +164,7 @@ export async function forgotPassword(req, res) {
 
     await sendEmail({
       to: email,
-      subject: "Forgot password From Urban Pulse",
+      subject: "Forgot password From Smart Health",
       html: forgotPasswordTemplate({
         name: isPresent.name,
         otp: otp,
@@ -136,6 +184,7 @@ export async function forgotPassword(req, res) {
   }
 }
 
+//Verify the otp
 export async function verifyForgotPasswordOtp(req, res) {
   try {
     const { email, otp } = req.body;
@@ -277,7 +326,6 @@ export async function uploadProfile(req, res) {
 }
 
 //update User Details Controller
-
 export async function updateUserDetails(req, res) {
   try {
     const userId = req.user._id; //from protect middleware

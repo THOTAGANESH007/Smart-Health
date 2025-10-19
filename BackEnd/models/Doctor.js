@@ -15,8 +15,10 @@ const doctorSchema = new mongoose.Schema(
       enum: ["ONLINE", "OFFLINE", "BOTH"],
       default: "BOTH",
     },
-    availability_schedule: { type: Object },
-    rating: { type: Number, default: 0 },
+    availability_schedule: Object,
+    rating: { type: Number, default: 0 }, // average rating
+    feedbackCount: { type: Number, default: 0 }, // number of feedbacks
+    totalRating: { type: Number, default: 0 }, // sum of all ratings
   },
   { timestamps: true }
 );
