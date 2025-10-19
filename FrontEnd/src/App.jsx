@@ -7,6 +7,7 @@ import UpdateUser from "./components/user/UpdateUser";
 import SignIn from "./components/auth/SignIn";
 import Signup from "./components/auth/Signup";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import Chat from "./components/gpt/Chat";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/signup" element={<Signup/>}/>
         <Route path="/reset-password" element={<ResetPassword />} />
          <Route path="/update-user" element={<UpdateUser />} />
+          <Route path="/chat" element={<Chat />} />
       </Routes>
     
   );

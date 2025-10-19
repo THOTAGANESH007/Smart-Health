@@ -45,7 +45,7 @@ const ResetPassword = () => {
       setConfirmPassword('');
 
       // ✅ Redirect to login after 1.5 seconds
-      setTimeout(() => navigate('/login'), 1500);
+      setTimeout(() => navigate('/signin'), 1500);
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.message || 'Failed to reset password. Please try again.');
