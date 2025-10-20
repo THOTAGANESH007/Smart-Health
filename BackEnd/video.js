@@ -73,11 +73,11 @@ export const initSocket = (server) => {
 
       socket.on("disconnect", () => {
         socket.broadcast.to(roomId).emit("user-left", socket.id);
-        console.log(`❌ ${socket.id} disconnected from room ${roomId}`);
+        console.log(`${socket.id} disconnected from room ${roomId}`);
       });
     });
   });
 
-  console.log("✅ Socket.IO signaling server initialized");
+  console.log("Socket.IO signaling server initialized");
   return io;
 };

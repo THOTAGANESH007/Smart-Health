@@ -5,9 +5,9 @@ const DoctorSearch = () => {
   const [doctors, setDoctors] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
-  const [filterBy, setFilterBy] = useState("specialization"); // default filter
+  const [filterBy, setFilterBy] = useState("name"); // default filter is name
 
-  const filters = ["specialization", "rating", "experience_years"];
+  const filters = ["name", "specialization", "rating", "experience_years"];
 
   // Fetch all doctors
   useEffect(() => {
@@ -30,10 +30,12 @@ const DoctorSearch = () => {
     const lowerSearch = search.toLowerCase();
     setFiltered(
       doctors.filter((d) => {
-        if (filterBy === "specialization") {
+        if (filterBy === "name") {
+          return (d.userId?.name || "").toLowerCase().includes(lowerSearch);
+        } else if (filterBy === "specialization") {
           return (d.specialization || "").toLowerCase().includes(lowerSearch);
         } else if (filterBy === "rating") {
-          return d.rating.toString().includes(lowerSearch);
+          return d.rating?.toString().includes(lowerSearch);
         } else if (filterBy === "experience_years") {
           return d.experience_years?.toString().includes(lowerSearch);
         }

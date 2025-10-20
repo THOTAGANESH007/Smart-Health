@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
-const socket = io("http://localhost:7777"); // your signaling server
+const socket = io("http://localhost:7777"); //signaling server
 
 const CallComponent = () => {
   const [roomId, setRoomId] = useState("");

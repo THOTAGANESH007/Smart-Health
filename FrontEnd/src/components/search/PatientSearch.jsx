@@ -5,9 +5,9 @@ const PatientSearch = () => {
   const [patients, setPatients] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
-  const [filterBy, setFilterBy] = useState("disease_details");
+  const [filterBy, setFilterBy] = useState("name"); // default filter is name
 
-  const filters = ["disease_details", "age", "gender"];
+  const filters = ["name", "disease_details", "age", "gender"];
 
   // Fetch all patients
   useEffect(() => {
@@ -30,7 +30,9 @@ const PatientSearch = () => {
     const lowerSearch = search.toLowerCase();
     setFiltered(
       patients.filter((p) => {
-        if (filterBy === "disease_details") {
+        if (filterBy === "name") {
+          return (p.userId?.name || "").toLowerCase().includes(lowerSearch);
+        } else if (filterBy === "disease_details") {
           return (p.disease_details || "").toLowerCase().includes(lowerSearch);
         } else if (filterBy === "age") {
           return p.age?.toString().includes(lowerSearch);
