@@ -1,7 +1,8 @@
 import Prescription from "../models/Prescription.js";
 import Patient from "../models/Patient.js";
 import { generatePrescriptionPDF } from "../utils/pdfGenerator.js";
-import { uploadFile } from "../utils/uploadcare.js";
+import { uploadPrescriptionToCloudinary } from "../utils/cloudinaryUpload.js";
+import axios from "axios";
 
 // Create a new prescription
 export const createPrescription = async (req, res) => {
@@ -15,7 +16,6 @@ export const createPrescription = async (req, res) => {
       "name"
     );
     if (!patient) return res.status(404).json({ message: "Patient not found" });
-    const patientName = patient.userId.name;
     // Create prescription object
     const prescriptionData = {
       patientId,
@@ -27,13 +27,15 @@ export const createPrescription = async (req, res) => {
     };
 
     // Generate PDF
-    // const pdfBuffer = await generatePrescriptionPDF(prescriptionData, patient);
-    // Upload PDF to Uploadcare
-    // const fileUrl = await uploadFile(
-    //   pdfBuffer,
-    //   `prescription_${patientName.replace(/\s+/g, "_")}.pdf`
-    // );
-    // prescriptionData.file_url = fileUrl;
+    const pdfBuffer = await generatePrescriptionPDF(prescriptionData, patient);
+    const patientName = patient.userId?.name || "patient";
+    // Upload PDF to Cloudinary
+    const fileUrl = await uploadPrescriptionToCloudinary(
+      pdfBuffer,
+      `prescription_${patientName}`
+    );
+    prescriptionData.file_url = fileUrl;
+    console.log("Uploaded PDF URL:", fileUrl);
 
     // Save prescription
     const prescription = await Prescription.create(prescriptionData);
@@ -89,21 +91,34 @@ export const getPrescriptionById = async (req, res) => {
 };
 
 // Download prescription PDF
-export const downloadPrescription = async (req, res) => {
-  try {
-    const { prescriptionId } = req.params;
+// export const downloadPrescription = async (req, res) => {
+//   try {
+//     const { prescriptionId } = req.params;
 
-    const prescription = await Prescription.findById(prescriptionId);
-    if (!prescription)
-      return res.status(404).json({ message: "Prescription not found" });
+//     const prescription = await Prescription.findById(prescriptionId);
+//     if (!prescription)
+//       return res.status(404).json({ message: "Prescription not found" });
 
-    if (!prescription.file_url)
-      return res.status(404).json({ message: "PDF not available" });
+//     if (!prescription.file_url)
+//       return res.status(404).json({ message: "PDF not available" });
 
-    res.redirect(prescription.file_url);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error downloading prescription", error: err.message });
-  }
-};
+//     // Fetch the PDF from Cloudinary
+//     const response = await axios.get(prescription.file_url, {
+//       responseType: "stream",
+//     });
+
+//     // Set headers for download
+//     res.setHeader(
+//       "Content-Disposition",
+//       `attachment; filename=prescription_${prescriptionId}.pdf`
+//     );
+//     res.setHeader("Content-Type", "application/pdf");
+
+//     // Stream the PDF to client
+//     response.data.pipe(res);
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ message: "Error downloading prescription", error: err.message });
+//   }
+// };

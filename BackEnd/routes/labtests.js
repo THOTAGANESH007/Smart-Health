@@ -4,7 +4,7 @@ import {
   completeLabTest,
   getPatientLabTests,
   getLabTestById,
-  downloadLabReport,
+  // downloadLabReport,
   createLabTest,
 } from "../controllers/labtests.js";
 
@@ -23,6 +23,6 @@ labRouter.get("/patient/:patientId", protect, getPatientLabTests);
 labRouter.get("/:labTestId", protect, getLabTestById);
 
 // Download PDF
-labRouter.get("/download/:labTestId", protect, downloadLabReport);
+// labRouter.get("/download/:labTestId", protect, downloadLabReport);
 
 export default labRouter;

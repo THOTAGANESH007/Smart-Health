@@ -2,7 +2,7 @@ import express from "express";
 import { protect } from "../middlewares/authMiddleware.js";
 import {
   createPrescription,
-  downloadPrescription,
+  // downloadPrescription,
   getPatientPrescriptions,
   getPrescriptionById,
 } from "../controllers/prescriptions.js";
@@ -26,10 +26,10 @@ prescriptionRouter.get(
 );
 
 // Download prescription PDF
-prescriptionRouter.get(
-  "/download/:prescriptionId",
-  protect,
-  downloadPrescription
-);
+// prescriptionRouter.get(
+//   "/download/:prescriptionId",
+//   protect,
+//   downloadPrescription
+// );
 
 export default prescriptionRouter;

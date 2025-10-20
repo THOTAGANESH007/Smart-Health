@@ -84,7 +84,7 @@ export async function signup(req, res) {
         break;
 
       default:
-        console.warn(`Unknown role: ${role}`);
+        // console.warn(`Unknown role: ${role}`);
         break;
     }
 
@@ -95,7 +95,7 @@ export async function signup(req, res) {
       role: user.role,
     });
   } catch (err) {
-    console.error("Signup error:", err);
+    // console.error("Signup error:", err);
     res.status(500).json({ error: err.message });
   }
 }
@@ -105,12 +105,9 @@ export async function signin(req, res) {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    // console.log(user);
     if (!user) return res.status(400).json({ message: "User Not Found!" });
-    // const hashedPassword = await bcrypt.hash(password, 10);
 
     const isMatch = await bcrypt.compare(password, user.password_hash);
-    console.log(isMatch);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 

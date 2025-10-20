@@ -52,8 +52,6 @@ export async function getAllPatients(req, res) {
 export async function getPatientById(req, res) {
   try {
     const { id } = req.params;
-    console.log("Fetching patient with userId:", id);
-
     const patient = await Patient.findById(id).populate(
       "userId",
       "name email phone role"

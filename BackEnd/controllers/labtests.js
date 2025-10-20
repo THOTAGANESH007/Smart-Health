@@ -1,7 +1,7 @@
 import LabTest from "../models/LabTest.js";
 import Patient from "../models/Patient.js";
 import { generateLabTestPDF } from "../utils/pdfGenerator.js";
-import { uploadFile } from "../utils/uploadcare.js";
+import { uploadLabReportToCloudinary } from "../utils/cloudinaryUpload.js";
 
 // Create a new lab test (by doctor)
 export const createLabTest = async (req, res) => {
@@ -39,10 +39,14 @@ export const completeLabTest = async (req, res) => {
     const { labTestId } = req.params;
     const { test_results, remarks } = req.body;
 
-    const labTest = await LabTest.findById(labTestId).populate(
-      "patientId",
-      "userId"
-    );
+    const labTest = await LabTest.findById(labTestId).populate({
+      path: "patientId",
+      populate: {
+        path: "userId",
+        select: "name email phone",
+      },
+    });
+
     if (!labTest)
       return res.status(404).json({ message: "Lab test not found" });
 
@@ -52,12 +56,15 @@ export const completeLabTest = async (req, res) => {
 
     // Generate and upload PDF
     const pdfBuffer = await generateLabTestPDF(labTest);
-    const patientName = labTest.patientId.userId.name.replace(/\s+/g, "_");
-    const fileUrl = await uploadFile(pdfBuffer, `labtest_${patientName}.pdf`);
+    const patientName = labTest.patientId?.userId?.name || "patient";
+
+    const fileUrl = await uploadLabReportToCloudinary(
+      pdfBuffer,
+      `labtest_${patientName}`
+    );
 
     labTest.file_url = fileUrl;
     await labTest.save();
-
     res.status(200).json({ message: "Lab test completed", labTest });
   } catch (err) {
     res
@@ -101,19 +108,19 @@ export const getLabTestById = async (req, res) => {
 };
 
 // Download lab test report
-export const downloadLabReport = async (req, res) => {
-  try {
-    const { labTestId } = req.params;
-    const labTest = await LabTest.findById(labTestId);
-    if (!labTest)
-      return res.status(404).json({ message: "Lab test not found" });
-    if (!labTest.file_url)
-      return res.status(404).json({ message: "Report not generated" });
+// export const downloadLabReport = async (req, res) => {
+//   try {
+//     const { labTestId } = req.params;
+//     const labTest = await LabTest.findById(labTestId);
+//     if (!labTest)
+//       return res.status(404).json({ message: "Lab test not found" });
+//     if (!labTest.file_url)
+//       return res.status(404).json({ message: "Report not generated" });
 
-    res.redirect(labTest.file_url);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error downloading report", error: err.message });
-  }
-};
+//     res.redirect(labTest.file_url);
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ message: "Error downloading report", error: err.message });
+//   }
+// };
