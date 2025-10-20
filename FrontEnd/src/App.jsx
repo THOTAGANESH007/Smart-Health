@@ -9,6 +9,8 @@ import Signup from "./components/auth/Signup";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import Chat from "./components/gpt/Chat";
 import CallComponent from "./components/video/CallComponent";
+import DoctorSearch from "./components/search/DoctorSearch";
+import PatientSearch from "./components/search/PatientSearch";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
       <Route path="/update-user" element={<UpdateUser />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/video" element={<CallComponent />} />
+      <Route path="/doctor-search" element={<DoctorSearch />} />
+      <Route path="/patient-search" element={<PatientSearch />} />
     </Routes>
   );
 }

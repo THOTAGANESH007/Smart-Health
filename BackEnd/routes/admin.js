@@ -50,7 +50,7 @@ adminRouter.delete(
   deleteReceptionist
 );
 
-adminRouter.get("/getAllDoctors", protect, authorize("ADMIN"), getAllDoctors);
+adminRouter.get("/getAllDoctors", protect, getAllDoctors);
 adminRouter.get(
   "/doctors/:userId",
   protect,
