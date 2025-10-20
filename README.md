@@ -11,14 +11,14 @@
 ### **2. Medical Records & History**
 
 - Access doctor-uploaded prescriptions and lab results.
-- Option to upload previous medical reports.
-- ML-powered **health trend analysis** and predictive insights.
+  <!-- - Option to upload previous medical reports. -->
+  <!-- - ML-powered **health trend analysis** and predictive insights. -->
 
 ### **3. Appointment Booking**
 
 - Search doctors by specialization, experience, and ratings.
 - Book, reschedule, or cancel appointments.
-- ML-based **smart scheduling** to reduce waiting times.
+<!-- - ML-based **smart scheduling** to reduce waiting times. -->
 
 ### **4. Telemedicine**
 
@@ -28,25 +28,26 @@
 
 ### **5. Prescription Management**
 
-- Download prescriptions uploaded by doctors.
+<!-- - Download prescriptions uploaded by doctors. -->
+
 - ML-enabled **medication reminders** and **drug interaction alerts**.
 
 ### **6. Lab Tests & Reports**
 
 - Schedule lab tests online.
 - Track test status and download reports.
-- ML-based **automated report analysis** for abnormal readings.
+<!-- - ML-based **automated report analysis** for abnormal readings. -->
 
 ### **7. Notifications & Alerts**
 
 - Appointment Reminders: SMS/email/in-app notifications.
-- Prescription & Medication Alerts: ML-powered intelligent reminders.
+<!-- - Prescription & Medication Alerts: ML-powered intelligent reminders. -->
 - Health Tips: Personalized AI-generated health advice based on medical history.
 
 ### **8. Feedback & Ratings**
 
 - Rate doctors and services.
-- ML-based **sentiment analysis** to improve healthcare quality.
+<!-- - ML-based **sentiment analysis** to improve healthcare quality. -->
 
 # 👨‍⚕️ Doctor Module – Doctor Management System
 
@@ -70,7 +71,7 @@ It provides a streamlined, user-friendly dashboard for doctors to deliver faster
 
 - **View Appointments** in daily/weekly calendar format.
 - **Accept / Reject / Reschedule** patient appointments.
-- View real-time patient queue (powered by Socket.IO/WebSockets).
+<!-- - View real-time patient queue (powered by Socket.IO/WebSockets). -->
 - Mark appointments as **In Progress**, **Completed**, or **Cancelled**.
 
 ---
@@ -86,7 +87,7 @@ It provides a streamlined, user-friendly dashboard for doctors to deliver faster
 
 ---
 
-### 🧠 4. ML-Powered Assistance
+<!-- ### 🧠 4. ML-Powered Assistance
 
 - Review **voice-to-text converted symptoms** entered by patient.
 - Get AI-suggested:
@@ -95,11 +96,12 @@ It provides a streamlined, user-friendly dashboard for doctors to deliver faster
 - **Doctor validates** and edits before finalizing.
 - Feedback option to improve model performance over time.
 
----
+--- -->
 
 ### 📝 5. Digital Prescription Management
 
-- Create prescriptions digitally or auto-generate from ML suggestions.
+<!-- - Create prescriptions digitally or auto-generate from ML suggestions. -->
+
 - Attach lab tests & medical advice.
 - Digitally sign prescriptions.
 - Store prescription automatically in patient record.
@@ -202,15 +204,15 @@ It allows administrators to manage doctors, receptionists, patients, appointment
 
 ---
 
-### 🧠 8. ML Model Monitoring
+<!-- ### 🧠 8. ML Model Monitoring
 
 - Monitor AI model performance (accuracy of disease prediction).
 - View logs of ML-suggested prescriptions.
 - Trigger model retraining by uploading new data.
 
----
+--- -->
 
-### 🔔 9. Notification Management
+<!-- ### 🔔 9. Notification Management
 
 - Send **broadcast messages** to all users (e.g., clinic holiday notice).
 - Send **targeted notifications** to specific groups:
@@ -218,13 +220,13 @@ It allows administrators to manage doctors, receptionists, patients, appointment
   - All receptionists
   - Patients of a specific doctor
 
----
+--- -->
 
-### 🛡️ 10. Security & Logs
+<!-- ### 🛡️ 10. Security & Logs
 
 - View activity logs (doctor logins, prescription edits, patient updates).
 - Manage data backup & restore.
-- Control access permissions for sensitive operations.
+- Control access permissions for sensitive operations. -->
 
 # 🧑‍💼 Receptionist Module – Doctor Management System
 

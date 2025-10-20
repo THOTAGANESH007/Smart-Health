@@ -11,6 +11,8 @@ import feedbackRouter from "./routes/feedback.js";
 import prescriptionRouter from "./routes/prescriptions.js";
 import labRouter from "./routes/labtests.js";
 import notificationRouter from "./routes/notifications.js";
+import { initSocket } from "./video.js";
+import http from "http";
 
 // Load environment variables
 dotenv.config();
@@ -44,11 +46,17 @@ app.use("/api/notifications", notificationRouter);
 //   res.send("SMART HEALTH API is running!");
 // });
 
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize Socket.IO from separate file
+initSocket(server);
+
 // MongoDB connection
 const PORT = process.env.PORT || 5000;
 
 connectDB()
   .then(() => {
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => console.log("MongoDB connection error:", err));
