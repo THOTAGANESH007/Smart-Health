@@ -9,6 +9,8 @@ import adminRouter from "./routes/admin.js";
 import appointmentRouter from "./routes/appointments.js";
 import feedbackRouter from "./routes/feedback.js";
 import prescriptionRouter from "./routes/prescriptions.js";
+import labRouter from "./routes/labtests.js";
+import notificationRouter from "./routes/notifications.js";
 
 // Load environment variables
 dotenv.config();
@@ -35,6 +37,8 @@ app.use("/api/admin", adminRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/prescriptions", prescriptionRouter);
+app.use("/api/labtests", labRouter);
+app.use("/api/notifications", notificationRouter);
 // Test route
 // app.get("/", (req, res) => {
 //   res.send("SMART HEALTH API is running!");

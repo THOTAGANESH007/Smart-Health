@@ -37,3 +37,15 @@ http://localhost:7777/api/prescriptions/create/:patientId  --post
 http://localhost:7777/api/prescriptions/getAllPrescriptions/:patientId  --get
 http://localhost:7777/api/prescriptions/getPrescription/:prescriptionId  --get
 http://localhost:7777/api/prescriptions/download/:prescriptionId  --get
+
+http://localhost:7777/api/labtests/create/:patientId  --post
+http://localhost:7777/api/labtests/complete/:labTestId  --put
+http://localhost:7777/api/labtests/patient/:patientId  --get
+http://localhost:7777/api/labtests/:labTestId  --get
+http://localhost:7777/api/labtests/download/:labTestId  --get
+
+http://localhost:7777/api/notifications/send  --post
+http://localhost:7777/api/notifications/  --get
+http://localhost:7777/api/notifications/mark-read/:id  --patch
+http://localhost:7777/api/notifications/:id  --delete
+http://localhost:7777/api/notifications/mark-all  --patch
