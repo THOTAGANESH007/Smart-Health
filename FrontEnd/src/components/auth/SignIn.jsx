@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { Mail, Lock, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-export default function SignIn() {
+const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+const navigate=useNavigate();
   const handleSubmit = async () => {
     if (!email || !password) {
       alert("Please enter both email and password");
@@ -15,40 +17,37 @@ export default function SignIn() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:7777/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // for cookies if backend uses them
-        body: JSON.stringify({ email, password }),
-      });
+      const { data } = await axios.post(
+        "http://localhost:7777/api/auth/signin",
+        { email, password },
+        { withCredentials: true } // if backend uses cookies
+      );
 
-      const data = await response.json();
       setLoading(false);
 
-      if (!response.ok) {
-        alert(data.message || "Invalid credentials");
-        return;
-      }
-
       // ✅ Store JWT token in localStorage
-      if (data.token) {
-        localStorage.setItem("token", data.token);
+      if (data.user) {
+        localStorage.setItem("user", data.user);
       }
 
       alert("✅ Login successful!");
       console.log("User logged in:", data);
 
-      // Redirect to dashboard
-      window.location.href = "/dashboard";
+      navigate("/analytics");
     } catch (err) {
-      console.error("Login error:", err);
       setLoading(false);
-      alert("Something went wrong. Please try again later.");
+      console.error("Login error:", err);
+
+      if (err.response) {
+        alert(err.response.data.message || "Invalid credentials");
+      } else {
+        alert("⚠️ Network error. Please check your connection.");
+      }
     }
   };
 
   const handleForgotPassword = () => {
-    window.location.href = "/forgot-password";
+    navigate("/forgot-password");
   };
 
   return (
@@ -125,4 +124,6 @@ export default function SignIn() {
       </div>
     </div>
   );
-}
+};
+
+export default SignIn;

@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")).render(
         }}
       />
 
-      {/* 🔹 Listen for foreground notifications */}
+     
       <NotificationHandler />
       <App />
     </BrowserRouter>

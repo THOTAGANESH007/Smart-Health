@@ -123,7 +123,7 @@ export async function signin(req, res) {
       secure: process.env.NODE_ENV === "production",
     });
 
-    res.json({ message: "Login successful" });
+    res.json({ message: "Login successful","user":user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
