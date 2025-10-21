@@ -7,7 +7,8 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-const navigate=useNavigate();
+  const navigate = useNavigate();
+
   const handleSubmit = async () => {
     if (!email || !password) {
       alert("Please enter both email and password");
@@ -20,20 +21,17 @@ const navigate=useNavigate();
       const { data } = await axios.post(
         "http://localhost:7777/api/auth/signin",
         { email, password },
-        { withCredentials: true } // if backend uses cookies
+        { withCredentials: true } // ✅ required for cookie-based auth
       );
 
       setLoading(false);
 
-      // ✅ Store JWT token in localStorage
       if (data.user) {
-        localStorage.setItem("user", data.user);
+        // store basic user info (not token)
+        localStorage.setItem("user", JSON.stringify(data.user));
+        alert(`✅ Welcome back, ${data.user.name}!`);
+        navigate("/analytics");
       }
-
-      alert("✅ Login successful!");
-      console.log("User logged in:", data);
-
-      navigate("/analytics");
     } catch (err) {
       setLoading(false);
       console.error("Login error:", err);
@@ -53,7 +51,6 @@ const navigate=useNavigate();
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-        {/* Icon */}
         <div className="flex justify-center mb-6">
           <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center">
             <Shield className="w-10 h-10 text-white" fill="white" />
@@ -67,7 +64,6 @@ const navigate=useNavigate();
           Enter your credentials to access your account
         </p>
 
-        {/* Email */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-900 mb-2">
             Email Address
@@ -84,7 +80,6 @@ const navigate=useNavigate();
           </div>
         </div>
 
-        {/* Password */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-900 mb-2">
             Password

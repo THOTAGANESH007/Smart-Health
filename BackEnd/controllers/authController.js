@@ -103,6 +103,7 @@ export async function signup(req, res) {
 // Signin
 export async function signin(req, res) {
   const { email, password } = req.body;
+
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "User Not Found!" });
@@ -111,19 +112,31 @@ export async function signin(req, res) {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
+    // Generate token
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7h" }
     );
 
+    // ✅ Store token in HTTP-only cookie
     res.cookie("auth_token", token, {
-      httpOnly: true,
-      sameSite: "Strict",
-      secure: process.env.NODE_ENV === "production",
+      httpOnly: true, // prevents JavaScript access
+      sameSite: "Lax", // prevent CSRF partially
+      secure: process.env.NODE_ENV === "production", // only over HTTPS in prod
+      maxAge: 7 * 60 * 60 * 1000, // 7 hours
     });
 
-    res.json({ message: "Login successful","user":user });
+    // ✅ Send user info (but NOT token) to frontend
+    res.json({
+      message: "Login successful",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
