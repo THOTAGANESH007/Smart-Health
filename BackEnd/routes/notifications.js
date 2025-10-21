@@ -1,7 +1,7 @@
 import express from "express";
 import { protect, authorize } from "../middlewares/authMiddleware.js";
 import {
-  getNotifications,
+  getAllNotifications,
   markAsRead,
   deleteNotification,
   markAllAsRead,
@@ -11,10 +11,15 @@ import {
 const notificationRouter = express.Router();
 
 // Admin
-notificationRouter.post("/send", protect, authorize("ADMIN"), sendNotification);
+notificationRouter.post(
+  "/send",
+  protect,
+  authorize("ADMIN", "RECEPTIONIST", "DOCTOR"),
+  sendNotification
+);
 
 // User
-notificationRouter.get("/", protect, getNotifications);
+notificationRouter.get("/", protect, getAllNotifications);
 notificationRouter.patch("/mark-read/:id", protect, markAsRead);
 notificationRouter.delete("/:id", protect, deleteNotification);
 notificationRouter.patch("/mark-all", protect, markAllAsRead);

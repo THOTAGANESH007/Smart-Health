@@ -369,3 +369,16 @@ export async function updateUserDetails(req, res) {
     });
   }
 }
+
+export async function saveFCMtoken(req, res) {
+  try {
+    const { fcmToken } = req.body;
+    if (!fcmToken)
+      return res.status(400).json({ message: "No token provided" });
+
+    await User.findByIdAndUpdate(req.user._id, { fcmToken });
+    res.json({ message: "FCM token saved successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error saving token", error: err.message });
+  }
+}

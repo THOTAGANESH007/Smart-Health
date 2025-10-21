@@ -1,27 +1,78 @@
 import Notification from "../models/Notification.js";
 import User from "../models/User.js";
+import admin from "../config/firebaseAdmin.js";
 
-// Admin sends notifications
+// export const sendNotification = async (req, res) => {
+//   try {
+//     const { message, recipients } = req.body; // recipients can be 'all' or array of userIds
+//     let users = [];
+
+//     if (recipients === "all") {
+//       users = await User.find({}, "_id");
+//     } else {
+//       users = await User.find({ _id: { $in: recipients } }, "_id");
+//     }
+
+//     const notifications = users.map((u) => ({
+//       userId: u._id,
+//       message,
+//     }));
+
+//     await Notification.insertMany(notifications);
+
+//     res.status(201).json({
+//       message: "Notification(s) sent successfully",
+//       count: notifications.length,
+//     });
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ message: "Error sending notifications", error: err.message });
+//   }
+// };
+
+// Send Notification (Admin/Doctor/Receptionist)
 export const sendNotification = async (req, res) => {
   try {
-    const { message, recipients } = req.body; // recipients can be 'all' or array of userIds
+    const { message, recipients } = req.body;
+    const senderRole = req.user.role;
+
     let users = [];
 
     if (recipients === "all") {
-      users = await User.find({}, "_id");
+      users = await User.find({}, "_id fcmToken name");
     } else {
-      users = await User.find({ _id: { $in: recipients } }, "_id");
+      users = await User.find(
+        { _id: { $in: recipients } },
+        "_id fcmToken name"
+      );
     }
+
+    if (!users.length)
+      return res.status(404).json({ message: "No users found" });
 
     const notifications = users.map((u) => ({
       userId: u._id,
       message,
+      senderRole,
     }));
 
     await Notification.insertMany(notifications);
 
+    const tokens = users.map((u) => u.fcmToken).filter(Boolean);
+    if (tokens.length) {
+      const payload = {
+        notification: {
+          title: `${senderRole} Message`,
+          body: message,
+        },
+        data: { type: "NEW_NOTIFICATION" },
+      };
+      await admin.messaging().sendMulticast({ tokens, ...payload });
+    }
+
     res.status(201).json({
-      message: "Notification(s) sent successfully",
+      message: "Notification(s) sent",
       count: notifications.length,
     });
   } catch (err) {
@@ -31,8 +82,7 @@ export const sendNotification = async (req, res) => {
   }
 };
 
-// Get all notifications for logged-in user
-export const getNotifications = async (req, res) => {
+export const getAllNotifications = async (req, res) => {
   try {
     const userId = req.user._id;
     const notifications = await Notification.find({ userId })

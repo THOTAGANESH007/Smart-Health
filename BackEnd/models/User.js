@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema(
     profile: { type: String, default: "" },
     forgot_password_otp: { type: String, default: null },
     forgot_password_expired: { type: Date, default: "" },
+    fcmToken: { type: String, default: null }, // Field for FCM token (firebase cloud messaging)
   },
   { timestamps: true }
 );

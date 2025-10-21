@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
-import { Mail, Lock, ArrowLeft, Shield } from 'lucide-react';
+import React, { useState } from "react";
+import { Mail, Lock, Shield } from "lucide-react";
 
 export default function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     if (!email || !password) {
-      alert('Please enter both email and password');
+      alert("Please enter both email and password");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:7777/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // ⬅️ Important to include cookies
+      const response = await fetch("http://localhost:7777/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // for cookies if backend uses them
         body: JSON.stringify({ email, password }),
       });
 
@@ -28,43 +26,34 @@ export default function SignIn() {
       setLoading(false);
 
       if (!response.ok) {
-        alert(data.message || 'Invalid credentials');
+        alert(data.message || "Invalid credentials");
         return;
       }
 
-      alert('Login successful!');
-      console.log('User logged in:', data);
+      // ✅ Store JWT token in localStorage
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
 
-      // Example redirect to dashboard after successful login
-      window.location.href = '/dashboard';
+      alert("✅ Login successful!");
+      console.log("User logged in:", data);
+
+      // Redirect to dashboard
+      window.location.href = "/dashboard";
     } catch (err) {
-      console.error('Login error:', err);
+      console.error("Login error:", err);
       setLoading(false);
-      alert('Something went wrong. Please try again later.');
+      alert("Something went wrong. Please try again later.");
     }
   };
 
-  const handleBack = () => {
-    window.history.back();
-  };
-
   const handleForgotPassword = () => {
-    // alert('Redirecting to forgot password page...');
-    window.location.href = '/forgot-password';
+    window.location.href = "/forgot-password";
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-        {/* Back Button */}
-        {/* <button
-          onClick={handleBack}
-          className="flex items-center text-gray-600 hover:text-gray-800 mb-8 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          <span className="text-base">Back</span>
-        </button> */}
-
         {/* Icon */}
         <div className="flex justify-center mb-6">
           <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center">
@@ -72,7 +61,6 @@ export default function SignIn() {
           </div>
         </div>
 
-        {/* Title */}
         <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
           Sign In
         </h1>
@@ -80,7 +68,7 @@ export default function SignIn() {
           Enter your credentials to access your account
         </p>
 
-        {/* Email Address */}
+        {/* Email */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-900 mb-2">
             Email Address
@@ -92,7 +80,7 @@ export default function SignIn() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
         </div>
@@ -109,35 +97,29 @@ export default function SignIn() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
         </div>
 
-        {/* Sign In Button */}
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className={`w-full py-3 rounded-lg font-medium transition-colors mb-6 ${
+          className={`w-full py-3 rounded-lg font-medium ${
             loading
-              ? 'bg-gray-400 text-white cursor-not-allowed'
-              : 'bg-black text-white hover:bg-gray-800'
+              ? "bg-gray-400 text-white cursor-not-allowed"
+              : "bg-black text-white hover:bg-gray-800"
           }`}
         >
-          {loading ? 'Signing In...' : 'Sign In'}
+          {loading ? "Signing In..." : "Sign In"}
         </button>
 
-        {/* Forgot Password Link */}
-        <div className="text-center">
+        <div className="text-center mt-6">
           <button
-            type="button"
             onClick={handleForgotPassword}
-            className="text-gray-600 hover:text-gray-800 transition-colors"
+            className="text-gray-600 hover:text-red-600 font-medium"
           >
-            Forgot your password?{' '}
-            <span className="text-red-500 hover:text-red-600 font-medium">
-              Reset
-            </span>
+            Forgot your password?
           </button>
         </div>
       </div>

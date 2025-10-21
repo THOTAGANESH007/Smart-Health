@@ -3,6 +3,7 @@ import { body } from "express-validator";
 import {
   forgotPassword,
   resetForgotPassword,
+  saveFCMtoken,
   signin,
   signout,
   signup,
@@ -39,4 +40,6 @@ authRouter.put(
 authRouter.put("/forgot-password", forgotPassword);
 authRouter.put("/verify-forgot-password-otp", verifyForgotPasswordOtp);
 authRouter.put("/reset-password", resetForgotPassword);
+
+authRouter.post("/save-fcm-token", protect, saveFCMtoken);
 export default authRouter;

@@ -15,6 +15,10 @@ const notificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    senderRole: {
+      type: String,
+      enum: ["ADMIN", "DOCTOR", "RECEPTIONIST"],
+    }, // optional
   },
   { timestamps: true }
 );
