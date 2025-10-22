@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Mail, Lock, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { requestForToken } from "../firebase/firebase";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -24,23 +25,36 @@ const SignIn = () => {
         { withCredentials: true } // ✅ required for cookie-based auth
       );
 
-      setLoading(false);
-
       if (data.user) {
         // store basic user info (not token)
         localStorage.setItem("user", JSON.stringify(data.user));
+
+        // ✅ Get FCM token and send to backend
+        try {
+          const fcmToken = await requestForToken();
+          if (fcmToken) {
+            await axios.post(
+              "http://localhost:7777/api/auth/save-fcm-token",
+              { fcmToken },
+              { withCredentials: true } // send cookie automatically
+            );
+            console.log("✅ FCM token saved for user");
+          }
+        } catch (err) {
+          console.error("❌ Failed to save FCM token:", err);
+        }
+
         alert(`✅ Welcome back, ${data.user.name}!`);
         navigate("/analytics");
       }
     } catch (err) {
-      setLoading(false);
       console.error("Login error:", err);
-
-      if (err.response) {
-        alert(err.response.data.message || "Invalid credentials");
-      } else {
-        alert("⚠️ Network error. Please check your connection.");
-      }
+      alert(
+        err.response?.data?.message ||
+          "⚠️ Network error. Please check your connection."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 

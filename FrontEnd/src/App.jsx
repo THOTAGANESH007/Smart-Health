@@ -11,7 +11,6 @@ import Chat from "./components/gpt/Chat";
 import CallComponent from "./components/video/CallComponent";
 import DoctorSearch from "./components/search/DoctorSearch";
 import PatientSearch from "./components/search/PatientSearch";
-import NotificationManager from "./components/firebase/NotificationManager";
 import AdminNotificationSender from "./components/notifications/AdminNotificationSender";
 
 function App() {
@@ -29,7 +28,6 @@ function App() {
       <Route path="/video" element={<CallComponent />} />
       <Route path="/doctor-search" element={<DoctorSearch />} />
       <Route path="/patient-search" element={<PatientSearch />} />
-      <Route path="/notification" element={<NotificationManager />} />
       <Route
         path="/admin-send-notification"
         element={<AdminNotificationSender />}

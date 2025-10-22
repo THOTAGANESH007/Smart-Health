@@ -51,24 +51,36 @@ export const sendNotification = async (req, res) => {
     if (!users.length)
       return res.status(404).json({ message: "No users found" });
 
+    // Save notifications in DB
     const notifications = users.map((u) => ({
       userId: u._id,
       message,
       senderRole,
     }));
-
     await Notification.insertMany(notifications);
 
-    const tokens = users.map((u) => u.fcmToken).filter(Boolean);
-    if (tokens.length) {
-      const payload = {
-        notification: {
-          title: `${senderRole} Message`,
-          body: message,
-        },
-        data: { type: "NEW_NOTIFICATION" },
-      };
-      await admin.messaging().sendMulticast({ tokens, ...payload });
+    // Send FCM push notifications individually
+    for (const u of users) {
+      if (u.fcmToken) {
+        const payload = {
+          token: u.fcmToken,
+          notification: {
+            title: `${senderRole} Message`,
+            body: message,
+          },
+          data: { type: "NEW_NOTIFICATION" },
+        };
+
+        try {
+          const response = await admin.messaging().send(payload);
+          console.log(`Notification sent to ${u.name}:`, response);
+        } catch (err) {
+          console.error(
+            `Failed to send notification to ${u.name}:`,
+            err.message
+          );
+        }
+      }
     }
 
     res.status(201).json({
@@ -76,6 +88,7 @@ export const sendNotification = async (req, res) => {
       count: notifications.length,
     });
   } catch (err) {
+    console.error(err);
     res
       .status(500)
       .json({ message: "Error sending notifications", error: err.message });

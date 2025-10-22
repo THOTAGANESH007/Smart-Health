@@ -6,6 +6,11 @@ function AdminNotificationSender() {
   const [message, setMessage] = useState("");
 
   const handleSend = async () => {
+    if (!message.trim()) {
+      alert("Please enter a message");
+      return;
+    }
+
     try {
       await axios.post(
         "http://localhost:7777/api/notifications/send",
@@ -14,11 +19,13 @@ function AdminNotificationSender() {
           recipients: "all",
         },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true, // ✅ send cookies automatically
         }
       );
       alert("✅ Notification sent!");
+      setMessage(""); // optional: clear textarea
     } catch (err) {
+      console.error("Error sending notification:", err);
       alert("❌ Failed to send notification");
     }
   };
