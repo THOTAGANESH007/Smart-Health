@@ -12,27 +12,58 @@ import CallComponent from "./components/video/CallComponent";
 import DoctorSearch from "./components/search/DoctorSearch";
 import PatientSearch from "./components/search/PatientSearch";
 import AdminNotificationSender from "./components/notifications/AdminNotificationSender";
+import ScheduleNotification from "./components/remainders/ScheduleNotification";
+import NotificationList from "./components/remainders/NotificationList";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<h1>Lets start</h1>} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/analytics" element={<AnalyticsDashboard />} />
-      <Route path="/verify-otp" element={<VerifyOTP />} />
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/update-user" element={<UpdateUser />} />
-      <Route path="/chat" element={<Chat />} />
-      <Route path="/video" element={<CallComponent />} />
-      <Route path="/doctor-search" element={<DoctorSearch />} />
-      <Route path="/patient-search" element={<PatientSearch />} />
-      <Route
-        path="/admin-send-notification"
-        element={<AdminNotificationSender />}
-      />
-    </Routes>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <Routes>
+        <Route path="/" element={<h1>Lets start</h1>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/analytics" element={<AnalyticsDashboard />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/update-user" element={<UpdateUser />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/video" element={<CallComponent />} />
+        <Route path="/doctor-search" element={<DoctorSearch />} />
+        <Route path="/patient-search" element={<PatientSearch />} />
+        <Route
+          path="/admin-send-notification"
+          element={<AdminNotificationSender />}
+        />
+        <Route
+          path="/schedule-notification"
+          element={
+            <div>
+              <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
+                Admin Notification Scheduler
+              </h1>
+              <ScheduleNotification />
+            </div>
+          }
+        />
+        <Route
+          path="/scheduled-list"
+          element={
+            <div>
+              <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
+                Scheduled Notifications
+              </h1>
+              <NotificationList />
+            </div>
+          }
+        />
+      </Routes>
+
+      {/* Toast Notifications (Global) */}
+      <ToastContainer position="bottom-right" />
+    </div>
   );
 }
 

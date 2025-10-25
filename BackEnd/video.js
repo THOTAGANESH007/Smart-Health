@@ -25,12 +25,12 @@ export const initSocket = (server) => {
   */
 
   io.on("connection", (socket) => {
-    console.log("🔌 New socket connected:", socket.id);
+    // console.log("🔌 New socket connected:", socket.id);
 
     socket.on("join-room", ({ roomId, username }) => {
       socket.username = username;
       socket.join(roomId);
-      console.log(`👥 ${username} (${socket.id}) joined room ${roomId}`);
+      // console.log(`👥 ${username} (${socket.id}) joined room ${roomId}`);
 
       socket.broadcast.to(roomId).emit("user-joined", socket.id, username);
 
@@ -78,6 +78,6 @@ export const initSocket = (server) => {
     });
   });
 
-  console.log("Socket.IO signaling server initialized");
+  // console.log("Socket.IO signaling server initialized");
   return io;
 };

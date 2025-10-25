@@ -1,4 +1,5 @@
 import Patient from "../models/Patient.js";
+import User from "../models/User.js";
 
 // Update patient details
 export const updatePatient = async (req, res) => {
@@ -81,6 +82,15 @@ export async function deletePatient(req, res) {
     res
       .status(200)
       .json({ message: "Patient and linked user deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+}
+
+export async function getAllUsers(req, res) {
+  try {
+    const patients = await User.find().select("_id name email phone role");
+    res.status(200).json(patients);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }

@@ -2,6 +2,7 @@ import express from "express";
 import {
   deletePatient,
   getAllPatients,
+  getAllUsers,
   getPatientById,
   updatePatient,
 } from "../controllers/patients.js";
@@ -28,4 +29,5 @@ patientsRouter.delete(
   authorize("ADMIN"),
   deletePatient
 );
+patientsRouter.get("/getAllUsers", getAllUsers);
 export default patientsRouter;
