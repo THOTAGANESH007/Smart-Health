@@ -11,14 +11,14 @@ function getServiceAccount() {
     }
 
     // 🔹 2️⃣ Else, try local JSON file (localhost / dev)
-    // const serviceAccountPath = path.resolve(
-    //   "./config/firebaseServiceAccountKey.json"
-    // );
+    const serviceAccountPath = path.resolve(
+      "./config/firebaseServiceAccountKey.json"
+    );
 
-    // if (fs.existsSync(serviceAccountPath)) {
-    //   const data = fs.readFileSync(serviceAccountPath, "utf8");
-    //   return JSON.parse(data);
-    // }
+    if (fs.existsSync(serviceAccountPath)) {
+      const data = fs.readFileSync(serviceAccountPath, "utf8");
+      return JSON.parse(data);
+    }
 
     // 🔹 3️⃣ If neither found
     throw new Error("Firebase service account not found in env or file!");

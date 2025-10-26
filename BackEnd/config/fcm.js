@@ -5,32 +5,53 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const serviceAccountPath =
-  process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
-  path.resolve("config/firebaseServiceAccountKey.json");
+// 🔹 Function to get Firebase credentials from env or file
+function getServiceAccount() {
+  try {
+    // 1️⃣ On Render (production): use FIREBASE_SERVICE_ACCOUNT env variable
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+      console.log("✅ Using FIREBASE_SERVICE_ACCOUNT from environment");
+      return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    }
 
-if (!fs.existsSync(serviceAccountPath)) {
-  throw new Error(`Service account file not found at: ${serviceAccountPath}`);
+    // 2️⃣ On localhost: use JSON file from config/
+    const serviceAccountPath =
+      process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
+      path.resolve("config/firebaseServiceAccountKey.json");
+
+    if (!fs.existsSync(serviceAccountPath)) {
+      throw new Error(
+        `Service account file not found at: ${serviceAccountPath}`
+      );
+    }
+
+    console.log(
+      `✅ Using local Firebase service account from: ${serviceAccountPath}`
+    );
+    return JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
+  } catch (error) {
+    console.error("❌ Failed to load Firebase service account:", error.message);
+    throw error;
+  }
 }
 
-// console.log(`Using Firebase service account from: ${serviceAccountPath}`);
+// 🔹 Initialize Firebase Admin (singleton pattern)
+if (!admin.apps.length) {
+  const serviceAccount = getServiceAccount();
 
-let app;
-if (admin.apps.length === 0) {
-  // Initialize only once
-  app = admin.initializeApp({
-    credential: admin.credential.cert(serviceAccountPath),
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
   });
-  // console.log("Firebase Admin initialized successfully");
+
+  console.log("🔥 Firebase Admin initialized successfully");
 } else {
-  // Reuse the existing instance
-  app = admin.app();
-  // console.log("♻️ Reusing existing Firebase app instance");
+  console.log("♻️ Reusing existing Firebase Admin instance");
 }
 
+// 🔹 Function to send notifications
 export const sendNotification = async (tokens, title, body) => {
   if (!tokens || tokens.length === 0) {
-    // console.log("No tokens provided for FCM message");
+    console.warn("⚠️ No tokens provided for FCM message");
     return;
   }
 
@@ -41,8 +62,10 @@ export const sendNotification = async (tokens, title, body) => {
 
   try {
     const response = await admin.messaging().sendEachForMulticast(message);
-    // console.log(`Notifications sent: ${response.successCount} success`);
+    console.log(`✅ Notifications sent: ${response.successCount} success`);
   } catch (error) {
-    console.error("Error sending notifications:", error);
+    console.error("❌ Error sending notifications:", error);
   }
 };
+
+export default admin;
