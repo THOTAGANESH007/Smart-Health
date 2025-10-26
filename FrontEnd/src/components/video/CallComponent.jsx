@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
-const socket = io("http://localhost:7777"); //signaling server
+const socket = io(`${import.meta.env.VITE_API_BASE_URL}`); //signaling server
 
 const CallComponent = () => {
   const [roomId, setRoomId] = useState("");

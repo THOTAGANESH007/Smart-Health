@@ -1,35 +1,40 @@
-import React, { useState } from 'react';
-import { Mail, Shield, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Mail, Shield, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const VerifyOTP = () => {
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate(); // ✅ For navigation
 
   const handleSubmit = async () => {
     setLoading(true);
-    setMessage('');
-    setError('');
+    setMessage("");
+    setError("");
 
     try {
-      const response = await axios.post('http://localhost:7777/api/auth/verify-forgot-password-otp', {
-        email,
-        otp,
-      });
+      const response = await axios.post(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/auth/verify-forgot-password-otp`,
+        {
+          email,
+          otp,
+        }
+      );
 
-      setMessage(response.data.message || 'OTP verified successfully!');
+      setMessage(response.data.message || "OTP verified successfully!");
       // ✅ Redirect to reset password page after verification
-      setTimeout(() => navigate('/reset-password'), 1500);
+      setTimeout(() => navigate("/reset-password"), 1500);
     } catch (err) {
       if (err.response && err.response.data) {
-        setError(err.response.data.message || 'Invalid OTP. Please try again.');
+        setError(err.response.data.message || "Invalid OTP. Please try again.");
       } else {
-        setError('Network error. Please check your connection.');
+        setError("Network error. Please check your connection.");
       }
     } finally {
       setLoading(false);
@@ -38,17 +43,20 @@ const VerifyOTP = () => {
 
   const handleResend = async () => {
     setLoading(true);
-    setMessage('');
-    setError('');
+    setMessage("");
+    setError("");
 
     try {
-      const response = await axios.post('http://localhost:7777/api/auth/forgot-password', { email });
-      setMessage(response.data.message || 'OTP resent successfully!');
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/forgot-password`,
+        { email }
+      );
+      setMessage(response.data.message || "OTP resent successfully!");
     } catch (err) {
       if (err.response && err.response.data) {
-        setError(err.response.data.message || 'Failed to resend OTP.');
+        setError(err.response.data.message || "Failed to resend OTP.");
       } else {
-        setError('Network error. Please check your connection.');
+        setError("Network error. Please check your connection.");
       }
     } finally {
       setLoading(false);
@@ -72,7 +80,9 @@ const VerifyOTP = () => {
               <Shield className="w-8 h-8" />
             </div>
 
-            <h2 className="text-3xl font-bold text-center text-black">Verify OTP</h2>
+            <h2 className="text-3xl font-bold text-center text-black">
+              Verify OTP
+            </h2>
             <p className="text-gray-600 mt-2 text-center">
               Enter the OTP sent to your email address
             </p>
@@ -80,7 +90,10 @@ const VerifyOTP = () => {
 
           <div className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-black mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-black mb-2"
+              >
                 Email Address
               </label>
               <div className="relative">
@@ -98,7 +111,10 @@ const VerifyOTP = () => {
             </div>
 
             <div>
-              <label htmlFor="otp" className="block text-sm font-medium text-black mb-2">
+              <label
+                htmlFor="otp"
+                className="block text-sm font-medium text-black mb-2"
+              >
                 OTP Code
               </label>
               <input
@@ -130,7 +146,7 @@ const VerifyOTP = () => {
               disabled={loading}
               className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Verifying...' : 'Verify OTP'}
+              {loading ? "Verifying..." : "Verify OTP"}
             </button>
 
             <div className="text-center">

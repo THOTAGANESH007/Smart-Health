@@ -20,7 +20,7 @@ const SignIn = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:7777/api/auth/signin",
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/signin`,
         { email, password },
         { withCredentials: true } // ✅ required for cookie-based auth
       );
@@ -34,7 +34,7 @@ const SignIn = () => {
           const fcmToken = await requestForToken();
           if (fcmToken) {
             await axios.post(
-              "http://localhost:7777/api/auth/save-fcm-token",
+              `${import.meta.env.VITE_API_BASE_URL}/api/auth/save-fcm-token`,
               { fcmToken },
               { withCredentials: true } // send cookie automatically
             );

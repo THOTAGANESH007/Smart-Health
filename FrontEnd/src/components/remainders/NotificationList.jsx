@@ -8,7 +8,9 @@ const NotificationList = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get("http://localhost:7777/api/schedule/all");
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/schedule/all`
+      );
       setNotifications(res.data);
     } catch (err) {
       console.error(err);
@@ -18,7 +20,9 @@ const NotificationList = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this notification?")) return;
     try {
-      await axios.delete(`http://localhost:7777/api/schedule/${id}`);
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/api/schedule/${id}`
+      );
       toast.success("Deleted successfully!");
       fetchNotifications();
     } catch (err) {

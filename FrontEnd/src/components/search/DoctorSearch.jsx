@@ -14,7 +14,7 @@ const DoctorSearch = () => {
     const fetchDoctors = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:7777/api/admin/getAllDoctors"
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/getAllDoctors`
         );
         setDoctors(res.data);
         setFiltered(res.data);

@@ -15,7 +15,7 @@ const ScheduleNotification = () => {
     const fetchPatients = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:7777/api/patients/getAllUsers"
+          `${import.meta.env.VITE_API_BASE_URL}/api/patients/getAllUsers`
         );
         setPatients(res.data || []);
       } catch (err) {
@@ -50,7 +50,10 @@ const ScheduleNotification = () => {
         recipients: sendToAll ? [] : selectedRecipients,
       };
 
-      await axios.post("http://localhost:7777/api/schedule", payload);
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/schedule`,
+        payload
+      );
       toast.success("Notification scheduled!");
 
       setTitle("");

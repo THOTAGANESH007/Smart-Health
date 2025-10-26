@@ -14,7 +14,7 @@ const PatientSearch = () => {
     const fetchPatients = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:7777/api/patients/getAllPatients"
+          `${import.meta.env.VITE_API_BASE_URL}/api/patients/getAllPatients`
         );
         setPatients(res.data);
         setFiltered(res.data);

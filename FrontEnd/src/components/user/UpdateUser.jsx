@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { User, Phone, Lock, Eye, EyeOff, Save, AlertCircle, Camera, Upload } from 'lucide-react';
+import React, { useState } from "react";
+import axios from "axios";
+import {
+  User,
+  Phone,
+  Lock,
+  Eye,
+  EyeOff,
+  Save,
+  AlertCircle,
+  Camera,
+  Upload,
+} from "lucide-react";
 
 const UpdateUser = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    password: ''
+    name: "",
+    phone: "",
+    password: "",
   });
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -38,37 +48,41 @@ const UpdateUser = () => {
 
   const handleImageUpload = async () => {
     if (!profileImage) {
-      setError('Please select an image first');
+      setError("Please select an image first");
       return;
     }
 
     setUploadingImage(true);
-    setMessage('');
-    setError('');
+    setMessage("");
+    setError("");
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const formDataImage = new FormData();
-      formDataImage.append('profile', profileImage);
+      formDataImage.append("profile", profileImage);
 
       const response = await axios.post(
-        'http://localhost:7777/api/auth/upload-profile',
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/upload-profile`,
         formDataImage,
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
-      setMessage(response.data.message || 'Profile image uploaded successfully!');
+      setMessage(
+        response.data.message || "Profile image uploaded successfully!"
+      );
       setProfileImage(null);
     } catch (err) {
       if (err.response) {
-        setError(err.response.data.message || 'Failed to upload profile image.');
+        setError(
+          err.response.data.message || "Failed to upload profile image."
+        );
       } else {
-        setError('Network error. Please check your connection.');
+        setError("Network error. Please check your connection.");
       }
     } finally {
       setUploadingImage(false);
@@ -77,50 +91,56 @@ const UpdateUser = () => {
 
   const validatePassword = (password) => {
     if (!password) return true;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
 
   const handleSubmit = async () => {
     setLoading(true);
-    setMessage('');
-    setError('');
+    setMessage("");
+    setError("");
 
     if (formData.password && !validatePassword(formData.password)) {
-      setError('Password must be at least 8 characters long and include uppercase, lowercase, number, and special character');
+      setError(
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
+      );
       setLoading(false);
       return;
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
 
       const response = await axios.put(
-        'http://localhost:7777/api/auth/update-user',
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/update-user`,
         {
           ...(formData.name && { name: formData.name }),
           ...(formData.phone && { phone: formData.phone }),
-          ...(formData.password && { password: formData.password })
+          ...(formData.password && { password: formData.password }),
         },
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
-      setMessage(response.data.message || 'User details updated successfully!');
+      setMessage(response.data.message || "User details updated successfully!");
       setFormData({
-        name: '',
-        phone: '',
-        password: ''
+        name: "",
+        phone: "",
+        password: "",
       });
     } catch (err) {
       if (err.response) {
-        setError(err.response.data.message || 'Failed to update user details. Please try again.');
+        setError(
+          err.response.data.message ||
+            "Failed to update user details. Please try again."
+        );
       } else {
-        setError('Network error. Please check your connection.');
+        setError("Network error. Please check your connection.");
       }
     } finally {
       setLoading(false);
@@ -128,11 +148,14 @@ const UpdateUser = () => {
   };
 
   const passwordRequirements = [
-    { label: 'At least 8 characters', met: formData.password.length >= 8 },
-    { label: 'One uppercase letter', met: /[A-Z]/.test(formData.password) },
-    { label: 'One lowercase letter', met: /[a-z]/.test(formData.password) },
-    { label: 'One number', met: /\d/.test(formData.password) },
-    { label: 'One special character', met: /[@$!%*?&]/.test(formData.password) }
+    { label: "At least 8 characters", met: formData.password.length >= 8 },
+    { label: "One uppercase letter", met: /[A-Z]/.test(formData.password) },
+    { label: "One lowercase letter", met: /[a-z]/.test(formData.password) },
+    { label: "One number", met: /\d/.test(formData.password) },
+    {
+      label: "One special character",
+      met: /[@$!%*?&]/.test(formData.password),
+    },
   ];
 
   return (
@@ -143,7 +166,9 @@ const UpdateUser = () => {
             <div className="flex items-center justify-center w-16 h-16 bg-black text-white rounded-full mx-auto mb-4">
               <User className="w-8 h-8" />
             </div>
-            <h2 className="text-3xl font-bold text-center text-black">Update Profile</h2>
+            <h2 className="text-3xl font-bold text-center text-black">
+              Update Profile
+            </h2>
             <p className="text-gray-600 mt-2 text-center">
               Update your account information
             </p>
@@ -152,9 +177,7 @@ const UpdateUser = () => {
           <div className="space-y-6">
             {/* Profile Image Upload Section */}
             <div className="rounded-lg p-2 ">
-              <label className="block text-sm font-medium text-black mb-3">
-               
-              </label>
+              <label className="block text-sm font-medium text-black mb-3"></label>
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
                   {profilePreview ? (
@@ -188,7 +211,7 @@ const UpdateUser = () => {
                     disabled={uploadingImage}
                     className="px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                    {uploadingImage ? "Uploading..." : "Upload Image"}
                   </button>
                 )}
               </div>
@@ -196,7 +219,10 @@ const UpdateUser = () => {
 
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-black mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-black mb-2"
+              >
                 Full Name
               </label>
               <div className="relative">
@@ -215,7 +241,10 @@ const UpdateUser = () => {
 
             {/* Phone Field */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-black mb-2">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-black mb-2"
+              >
                 Phone Number
               </label>
               <div className="relative">
@@ -234,13 +263,17 @@ const UpdateUser = () => {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
-                New Password <span className="text-gray-500 text-xs">(Optional)</span>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-black mb-2"
+              >
+                New Password{" "}
+                <span className="text-gray-500 text-xs">(Optional)</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   value={formData.password}
@@ -252,7 +285,11 @@ const UpdateUser = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -268,9 +305,11 @@ const UpdateUser = () => {
                   {passwordRequirements.map((req, index) => (
                     <li
                       key={index}
-                      className={`text-sm flex items-center ${req.met ? 'text-green-600' : 'text-gray-600'}`}
+                      className={`text-sm flex items-center ${
+                        req.met ? "text-green-600" : "text-gray-600"
+                      }`}
                     >
-                      <span className="mr-2">{req.met ? '✓' : '○'}</span>
+                      <span className="mr-2">{req.met ? "✓" : "○"}</span>
                       {req.label}
                     </li>
                   ))}
@@ -301,7 +340,7 @@ const UpdateUser = () => {
                 className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? (
-                  'Updating...'
+                  "Updating..."
                 ) : (
                   <>
                     <Save className="w-5 h-5 mr-2" />

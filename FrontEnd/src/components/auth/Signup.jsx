@@ -13,7 +13,7 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
-const navigate=useNavigate();
+  const navigate = useNavigate();
   // Handle form submit
   const handleSubmit = async () => {
     if (!name || !email || !role || !phone || !password || !confirmPassword) {
@@ -34,13 +34,16 @@ const navigate=useNavigate();
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:7777/api/auth/signup", {
-        name,
-        email,
-        role,
-        phone,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`,
+        {
+          name,
+          email,
+          role,
+          phone,
+          password,
+        }
+      );
 
       alert("✅ Account created successfully!");
       console.log("User signed up:", response.data);

@@ -13,7 +13,7 @@ function AdminNotificationSender() {
 
     try {
       await axios.post(
-        "http://localhost:7777/api/notifications/send",
+        `${import.meta.env.VITE_API_BASE_URL}/api/notifications/send`,
         {
           message,
           recipients: "all",
