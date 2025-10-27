@@ -26,11 +26,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// CORS config (allow frontend to communicate)
+const allowedOrigins = [
+  "http://localhost:5173", // for local development
+  "https://smart-health-major.vercel.app", // your deployed frontend
+];
+
 app.use(
   cors({
-    credentials: true,
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like Postman) or those in allowedOrigins
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // allows sending cookies or authorization headers
   })
 );
 
