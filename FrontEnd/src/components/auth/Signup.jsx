@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Mail, Lock, Shield, User, Phone } from "lucide-react";
+import { Mail, Lock, Shield, User, Phone, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   // Separate state variables for each field
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Show/hide password toggle
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   // Handle form submit
   const handleSubmit = async () => {
-    if (!name || !email || !role || !phone || !password || !confirmPassword) {
+    if (!name || !email || !phone || !password || !confirmPassword) {
       alert("⚠️ Please fill in all fields");
       return;
     }
@@ -39,7 +43,6 @@ const SignUp = () => {
         {
           name,
           email,
-          role,
           phone,
           password,
         }
@@ -113,20 +116,6 @@ const SignUp = () => {
           </div>
         </div>
 
-        {/* Role */}
-        <div className="mb-5">
-          <label className="block text-sm font-semibold text-gray-900 mb-2">
-            Role
-          </label>
-          <input
-            type="text"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            placeholder="e.g. Admin, User, Player"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-          />
-        </div>
-
         {/* Phone */}
         <div className="mb-5">
           <label className="block text-sm font-semibold text-gray-900 mb-2">
@@ -152,12 +141,19 @@ const SignUp = () => {
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
         </div>
 
@@ -169,12 +165,21 @@ const SignUp = () => {
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter your password"
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
+            <button
+              type="button"
+              onClick={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
         </div>
 

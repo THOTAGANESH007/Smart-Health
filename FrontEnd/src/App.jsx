@@ -16,12 +16,13 @@ import ScheduleNotification from "./components/remainders/ScheduleNotification";
 import NotificationList from "./components/remainders/NotificationList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import HospitalLanding from "./components/HospitalLanding";
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <Routes>
-        <Route path="/" element={<h1>Lets start</h1>} />
+        <Route path="/" element={<HospitalLanding/>} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/analytics" element={<AnalyticsDashboard />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
