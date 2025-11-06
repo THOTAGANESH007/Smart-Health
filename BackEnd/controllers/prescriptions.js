@@ -9,7 +9,7 @@ export const createPrescription = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { diagnosis, medications, precautions } = req.body;
-    const doctorId = req.user._id; // logged-in doctor
+    const doctorId = req.user.doctorId; // logged-in doctor
 
     const patient = await Patient.findById(patientId).populate(
       "userId",
@@ -90,34 +90,20 @@ export const getPrescriptionById = async (req, res) => {
 };
 
 // Download prescription PDF
-// export const downloadPrescription = async (req, res) => {
-//   try {
-//     const { prescriptionId } = req.params;
+export const downloadPrescription = async (req, res) => {
+  try {
+    const { prescriptionId } = req.params;
+    const prescription = await Prescription.findById(prescriptionId);
+    if (!prescription)
+      return res.status(404).json({ message: "Prescription not found" });
 
-//     const prescription = await Prescription.findById(prescriptionId);
-//     if (!prescription)
-//       return res.status(404).json({ message: "Prescription not found" });
+    if (!prescription.file_url)
+      return res.status(404).json({ message: "PDF not available" });
 
-//     if (!prescription.file_url)
-//       return res.status(404).json({ message: "PDF not available" });
-
-//     // Fetch the PDF from Cloudinary
-//     const response = await axios.get(prescription.file_url, {
-//       responseType: "stream",
-//     });
-
-//     // Set headers for download
-//     res.setHeader(
-//       "Content-Disposition",
-//       `attachment; filename=prescription_${prescriptionId}.pdf`
-//     );
-//     res.setHeader("Content-Type", "application/pdf");
-
-//     // Stream the PDF to client
-//     response.data.pipe(res);
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ message: "Error downloading prescription", error: err.message });
-//   }
-// };
+    res.redirect(prescription.file_url);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error downloading prescription", error: err.message });
+  }
+};

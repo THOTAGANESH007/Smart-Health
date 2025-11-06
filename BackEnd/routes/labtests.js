@@ -6,6 +6,7 @@ import {
   getLabTestById,
   // downloadLabReport,
   createLabTest,
+  downloadLabReport,
 } from "../controllers/labtests.js";
 
 const labRouter = express.Router();
@@ -23,6 +24,6 @@ labRouter.get("/patient/:patientId", protect, getPatientLabTests);
 labRouter.get("/:labTestId", protect, getLabTestById);
 
 // Download PDF
-// labRouter.get("/download/:labTestId", protect, downloadLabReport);
+labRouter.get("/download/:labTestId", protect, downloadLabReport);
 
 export default labRouter;

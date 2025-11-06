@@ -8,7 +8,7 @@ export const createLabTest = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { diagnosis, test_results, remarks } = req.body;
-    const doctorId = req.user._id; // logged-in doctor
+    const doctorId = req.user.doctorId; // logged-in doctor
 
     const patient = await Patient.findById(patientId).populate(
       "userId",
@@ -108,19 +108,19 @@ export const getLabTestById = async (req, res) => {
 };
 
 // Download lab test report
-// export const downloadLabReport = async (req, res) => {
-//   try {
-//     const { labTestId } = req.params;
-//     const labTest = await LabTest.findById(labTestId);
-//     if (!labTest)
-//       return res.status(404).json({ message: "Lab test not found" });
-//     if (!labTest.file_url)
-//       return res.status(404).json({ message: "Report not generated" });
+export const downloadLabReport = async (req, res) => {
+  try {
+    const { labTestId } = req.params;
+    const labTest = await LabTest.findById(labTestId);
+    if (!labTest)
+      return res.status(404).json({ message: "Lab test not found" });
+    if (!labTest.file_url)
+      return res.status(404).json({ message: "Report not generated" });
 
-//     res.redirect(labTest.file_url);
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ message: "Error downloading report", error: err.message });
-//   }
-// };
+    res.redirect(labTest.file_url);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error downloading report", error: err.message });
+  }
+};

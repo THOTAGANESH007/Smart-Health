@@ -35,8 +35,8 @@ export const createAppointment = async (req, res) => {
 export const getAllAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find()
-      .populate("patientId", "userId name email")
-      .populate("doctorId", "userId specialization rating")
+      .populate("patientId", "userId name email profile phone")
+      .populate("doctorId", "userId specialization rating profile phone")
       .sort({ createdAt: -1 });
 
     res.status(200).json({ appointments });
@@ -52,8 +52,8 @@ export const getDoctorAppointments = async (req, res) => {
   try {
     const doctorId = req.user.doctorId;
     const appointments = await Appointment.find({ doctorId })
-      .populate("patientId", "userId name email")
-      .sort({ scheduled_date: 1 });
+      .populate("patientId", "userId name email profile phone")
+      .sort({ scheduled_date: -1 });
     res.status(200).json({ appointments });
   } catch (error) {
     res.status(500).json({
