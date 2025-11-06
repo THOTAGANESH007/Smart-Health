@@ -21,6 +21,9 @@ import GetPatientAppointments from "./components/appointments/GetPatientAppointm
 import PatientAppointments from "./components/appointments/PatientAppointments";
 import AdminAppointments from "./components/appointments/AdminAppointments";
 import DoctorAppointments from "./components/appointments/DoctorAppointments";
+import CreateLabTest from "./components/labtests/CreateLabTest";
+import UpdateLabTest from "./components/labtests/UpdateLabTest";
+import PatientLabTests from "./components/labtests/PatientLabTests";
 
 function App() {
   return (
@@ -42,6 +45,9 @@ function App() {
         <Route path="/app-doctor" element={<DoctorAppointments />} />
         <Route path="/app-admin" element={<AdminAppointments />} />
         <Route path="/get-app-patient" element={<GetPatientAppointments />} />
+        <Route path="/lab-create" element={<CreateLabTest />} />
+        <Route path="/lab-update" element={<UpdateLabTest />} />
+        <Route path="/lab-patient-tests" element={<PatientLabTests />} />
         <Route
           path="/admin-send-notification"
           element={<AdminNotificationSender />}

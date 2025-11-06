@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:5173", // for local development
-  "https://smart-health-major.vercel.app", // your deployed frontend
+  "https://smart-health-major.vercel.app", // for deployed frontend
 ];
 
 app.use(

@@ -135,7 +135,7 @@ export async function signin(req, res) {
       { expiresIn: "7h" }
     );
 
-    // ✅ Store token in HTTP-only cookie
+    // Store token in HTTP-only cookie
     res.cookie("auth_token", token, {
       httpOnly: true, // prevents JavaScript access
       sameSite: "Lax", // prevent CSRF partially
@@ -143,15 +143,27 @@ export async function signin(req, res) {
       maxAge: 7 * 60 * 60 * 1000, // 7 hours
     });
 
-    // ✅ Send user info (but NOT token) to frontend
+    // Prepare response object with role-based ID
+    const userResponse = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+
+    // Attach role-based profile ID if exists
+    if (user.role === "PATIENT" && user.patientId) {
+      userResponse.patientId = user.patientId;
+    } else if (user.role === "DOCTOR" && user.doctorId) {
+      userResponse.doctorId = user.doctorId;
+    } else if (user.role === "RECEPTIONIST" && user.receptionistId) {
+      userResponse.receptionistId = user.receptionistId;
+    }
+
+    // Send response
     res.json({
       message: "Login successful",
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: userResponse,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

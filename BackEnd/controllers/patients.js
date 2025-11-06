@@ -37,17 +37,17 @@ export const updatePatient = async (req, res) => {
 };
 
 // Get all patients with populated user details
-export async function getAllPatients(req, res) {
+export const getAllPatients = async (req, res) => {
   try {
     const patients = await Patient.find()
-      .populate("userId", "name email phone")
+      .populate("userId", "name email phone profile")
       .sort({ createdAt: -1 });
 
-    res.status(200).json(patients);
+    res.status(200).json({ patients });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
-}
+};
 
 // Get a specific patient with populated user details
 export async function getPatientById(req, res) {

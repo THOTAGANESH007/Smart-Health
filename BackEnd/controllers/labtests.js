@@ -74,18 +74,27 @@ export const completeLabTest = async (req, res) => {
 };
 
 // Get all lab tests of a patient
+
 export const getPatientLabTests = async (req, res) => {
   try {
     const { patientId } = req.params;
+
     const tests = await LabTest.find({ patientId })
-      .populate("doctorId", "userId specialization")
+      .select("test_date diagnosis test_results remarks status file_url")
       .sort({ test_date: -1 });
+
+    if (!tests || tests.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No lab tests found for this patient" });
+    }
 
     res.status(200).json({ tests });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching lab tests", error: err.message });
+    res.status(500).json({
+      message: "Error fetching patient lab tests",
+      error: err.message,
+    });
   }
 };
 
@@ -122,5 +131,32 @@ export const downloadLabReport = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error downloading report", error: err.message });
+  }
+};
+
+export const getAllLabTests = async (req, res) => {
+  try {
+    const tests = await LabTest.find()
+      .populate({
+        path: "patientId",
+        populate: {
+          path: "userId",
+          select: "name age gender email",
+        },
+      })
+      .populate({
+        path: "doctorId",
+        populate: {
+          path: "userId",
+          select: "name specialization email",
+        },
+      })
+      .sort({ test_date: -1 });
+
+    res.status(200).json({ tests });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error fetching lab tests", error: err.message });
   }
 };
