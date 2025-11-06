@@ -73,7 +73,6 @@ export const sendNotification = async (req, res) => {
 
         try {
           const response = await admin.messaging().send(payload);
-          console.log(`Notification sent to ${u.name}:`, response);
         } catch (err) {
           console.error(
             `Failed to send notification to ${u.name}:`,

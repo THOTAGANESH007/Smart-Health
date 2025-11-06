@@ -51,11 +51,9 @@ export const getAllAppointments = async (req, res) => {
 export const getDoctorAppointments = async (req, res) => {
   try {
     const doctorId = req.user.doctorId;
-    console.log("Fetching appointments for doctorId:", doctorId);
     const appointments = await Appointment.find({ doctorId })
       .populate("patientId", "userId name email")
       .sort({ scheduled_date: 1 });
-    console.log("Fetched appointments:", appointments);
     res.status(200).json({ appointments });
   } catch (error) {
     res.status(500).json({
@@ -69,7 +67,6 @@ export const getDoctorAppointments = async (req, res) => {
 export const getPatientAppointments = async (req, res) => {
   try {
     const patientId = req.user.patientId;
-    console.log("Fetching appointments for patientId:", patientId);
     const appointments = await Appointment.find({ patientId })
       .populate({
         path: "doctorId",

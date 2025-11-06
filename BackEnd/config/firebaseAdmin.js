@@ -23,7 +23,7 @@ function getServiceAccount() {
     // 🔹 3️⃣ If neither found
     throw new Error("Firebase service account not found in env or file!");
   } catch (err) {
-    // console.error("❌ Error loading Firebase service account:", err.message);
+    console.error("❌ Error loading Firebase service account:", err.message);
     throw err;
   }
 }

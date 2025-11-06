@@ -38,7 +38,7 @@ const SignIn = () => {
               { fcmToken },
               { withCredentials: true } // send cookie automatically
             );
-            console.log("✅ FCM token saved for user");
+            // console.log("✅ FCM token saved for user");
           }
         } catch (err) {
           console.error("❌ Failed to save FCM token:", err);

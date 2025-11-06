@@ -10,7 +10,7 @@ function getServiceAccount() {
   try {
     // 1️⃣ On Render (production): use FIREBASE_SERVICE_ACCOUNT env variable
     if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-      console.log("✅ Using FIREBASE_SERVICE_ACCOUNT from environment");
+      // console.log("✅ Using FIREBASE_SERVICE_ACCOUNT from environment");
       return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
     }
 
@@ -25,9 +25,9 @@ function getServiceAccount() {
       );
     }
 
-    console.log(
-      `✅ Using local Firebase service account from: ${serviceAccountPath}`
-    );
+    // console.log(
+    //   `✅ Using local Firebase service account from: ${serviceAccountPath}`
+    // );
     return JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
   } catch (error) {
     console.error("❌ Failed to load Firebase service account:", error.message);
@@ -43,15 +43,15 @@ if (!admin.apps.length) {
     credential: admin.credential.cert(serviceAccount),
   });
 
-  console.log("🔥 Firebase Admin initialized successfully");
+  // console.log("🔥 Firebase Admin initialized successfully");
 } else {
-  console.log("♻️ Reusing existing Firebase Admin instance");
+  // console.log("♻️ Reusing existing Firebase Admin instance");
 }
 
 // 🔹 Function to send notifications
 export const sendNotification = async (tokens, title, body) => {
   if (!tokens || tokens.length === 0) {
-    console.warn("⚠️ No tokens provided for FCM message");
+    // console.warn("⚠️ No tokens provided for FCM message");
     return;
   }
 
@@ -62,7 +62,7 @@ export const sendNotification = async (tokens, title, body) => {
 
   try {
     const response = await admin.messaging().sendEachForMulticast(message);
-    console.log(`✅ Notifications sent: ${response.successCount} success`);
+    // console.log(`✅ Notifications sent: ${response.successCount} success`);
   } catch (error) {
     console.error("❌ Error sending notifications:", error);
   }

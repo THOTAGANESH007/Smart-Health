@@ -24,7 +24,7 @@ export const requestForToken = async () => {
     });
 
     if (currentToken) {
-      console.log("✅ FCM Token:", currentToken);
+      // console.log("✅ FCM Token:", currentToken);
       // Send this token to your backend and store it in User.fcmToken
       return currentToken;
     } else {
@@ -41,7 +41,7 @@ export const requestForToken = async () => {
 export const onMessageListener = () =>
   new Promise((resolve) => {
     onMessage(messaging, (payload) => {
-      console.log("📩 Foreground Message:", payload);
+      // console.log("📩 Foreground Message:", payload);
       resolve(payload);
     });
   });

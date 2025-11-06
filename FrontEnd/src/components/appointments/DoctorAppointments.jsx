@@ -24,7 +24,7 @@ const DoctorAppointments = () => {
         `${baseUrl}/api/appointments/getDoctorAppointments`,
         axiosConfig
       );
-      console.log("Doctor appointments fetched:", res.data.appointments);
+      // console.log("Doctor appointments fetched:", res.data.appointments);
       setAppointments(res.data.appointments || []);
     } catch {
       setError("Error fetching doctor appointments");

@@ -19,10 +19,10 @@ export default function startScheduler() {
     const nowUTC = new Date();
     const nowIST = toIST(nowUTC);
 
-    console.log(
-      "Scheduler triggered at (IST):",
-      nowIST.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
-    );
+    // console.log(
+    //   "Scheduler triggered at (IST):",
+    //   nowIST.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+    // );
 
     try {
       // Log all notifications for debugging

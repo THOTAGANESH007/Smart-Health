@@ -112,7 +112,6 @@ export async function signup(req, res) {
       role: user.role,
     });
   } catch (err) {
-    console.error("Signup error:", err);
     res.status(500).json({ error: err.message });
   }
 }

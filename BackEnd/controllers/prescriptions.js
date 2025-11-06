@@ -35,7 +35,6 @@ export const createPrescription = async (req, res) => {
       `prescription_${patientName}`
     );
     prescriptionData.file_url = fileUrl;
-    console.log("Uploaded PDF URL:", fileUrl);
 
     // Save prescription
     const prescription = await Prescription.create(prescriptionData);

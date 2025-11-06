@@ -10,7 +10,7 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
     .then((registration) => {
-      console.log("✅ Service Worker registered:", registration);
+      // console.log("✅ Service Worker registered:", registration);
     })
     .catch((error) => {
       console.error("❌ Service Worker registration failed:", error);
@@ -22,8 +22,7 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <NotificationPermission
         onTokenReceived={(token) => {
-          console.log("✅ FCM Token received:", token);
-          // TODO: Send this token to your backend via API
+          // console.log("✅ FCM Token received:", token);
         }}
       />
 

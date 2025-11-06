@@ -68,12 +68,12 @@ export const initSocket = (server) => {
       socket.on("leave-room", () => {
         socket.leave(roomId);
         socket.broadcast.to(roomId).emit("user-left", socket.id);
-        console.log(`🚪 ${socket.id} left room ${roomId}`);
+        // console.log(`🚪 ${socket.id} left room ${roomId}`);
       });
 
       socket.on("disconnect", () => {
         socket.broadcast.to(roomId).emit("user-left", socket.id);
-        console.log(`${socket.id} disconnected from room ${roomId}`);
+        // console.log(`${socket.id} disconnected from room ${roomId}`);
       });
     });
   });
