@@ -24,6 +24,8 @@ import DoctorAppointments from "./components/appointments/DoctorAppointments";
 import CreateLabTest from "./components/labtests/CreateLabTest";
 import UpdateLabTest from "./components/labtests/UpdateLabTest";
 import PatientLabTests from "./components/labtests/PatientLabTests";
+import PatientPrescriptions from "./components/prescriptions/PatientPrescriptions";
+import CreatePrescription from "./components/prescriptions/CreatePrescription";
 
 function App() {
   return (
@@ -48,6 +50,8 @@ function App() {
         <Route path="/lab-create" element={<CreateLabTest />} />
         <Route path="/lab-update" element={<UpdateLabTest />} />
         <Route path="/lab-patient-tests" element={<PatientLabTests />} />
+        <Route path="/pres-patient" element={<PatientPrescriptions />} />
+        <Route path="/pres-create" element={<CreatePrescription />} />
         <Route
           path="/admin-send-notification"
           element={<AdminNotificationSender />}

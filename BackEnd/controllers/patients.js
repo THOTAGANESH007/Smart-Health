@@ -41,6 +41,7 @@ export const getAllPatients = async (req, res) => {
   try {
     const patients = await Patient.find()
       .populate("userId", "name email phone profile")
+      .select("age gender address disease_details blood_group createdAt")
       .sort({ createdAt: -1 });
 
     res.status(200).json({ patients });
