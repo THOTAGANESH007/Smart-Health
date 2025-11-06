@@ -21,6 +21,11 @@ const appointmentSchema = new mongoose.Schema(
       enum: ["PENDING", "CONFIRMED", "IN_PROGRESS", "COMPLETED", "CANCELLED"],
       default: "PENDING",
     },
+    message: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     // booked_by: {
     //   type: String,
     //   enum: ["PATIENT", "RECEPTIONIST"],

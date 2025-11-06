@@ -6,8 +6,8 @@ import Patient from "../models/Patient.js";
 export const createAppointment = async (req, res) => {
   try {
     const { doctorId } = req.params;
-    const { scheduled_date } = req.body;
-    const patientId = req.user._id;
+    const { scheduled_date, message } = req.body;
+    const patientId = req.user.patientId;
 
     // Verify doctor exists
     const doctor = await Doctor.findById(doctorId);
@@ -17,6 +17,7 @@ export const createAppointment = async (req, res) => {
       doctorId,
       patientId,
       scheduled_date,
+      message,
     });
 
     res.status(201).json({
@@ -49,11 +50,12 @@ export const getAllAppointments = async (req, res) => {
 // Get doctor’s appointments
 export const getDoctorAppointments = async (req, res) => {
   try {
-    const doctorId = req.user._id;
+    const doctorId = req.user.doctorId;
+    console.log("Fetching appointments for doctorId:", doctorId);
     const appointments = await Appointment.find({ doctorId })
       .populate("patientId", "userId name email")
       .sort({ scheduled_date: 1 });
-
+    console.log("Fetched appointments:", appointments);
     res.status(200).json({ appointments });
   } catch (error) {
     res.status(500).json({
@@ -66,9 +68,18 @@ export const getDoctorAppointments = async (req, res) => {
 // Get patient’s appointments
 export const getPatientAppointments = async (req, res) => {
   try {
-    const patientId = req.user._id;
+    const patientId = req.user.patientId;
+    console.log("Fetching appointments for patientId:", patientId);
     const appointments = await Appointment.find({ patientId })
-      .populate("doctorId", "userId specialization rating")
+      .populate({
+        path: "doctorId",
+        select: "userId specialization rating",
+        populate: {
+          path: "userId",
+          model: "User",
+          select: "name email profile phone",
+        },
+      })
       .sort({ scheduled_date: 1 });
 
     res.status(200).json({ appointments });

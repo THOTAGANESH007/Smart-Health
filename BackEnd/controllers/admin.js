@@ -146,7 +146,7 @@ export const deleteReceptionist = async (req, res) => {
 export const getAllDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find()
-      .populate("userId", "name email phone role is_active")
+      .populate("userId", "name email phone role is_active profile")
       .exec();
     res.status(200).json({ doctors });
   } catch (err) {
@@ -160,7 +160,7 @@ export const getDoctorByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
     const doctor = await Doctor.findOne({ userId })
-      .populate("userId", "name email phone role is_active")
+      .populate("userId", "name email phone role is_active profile")
       .exec();
 
     if (!doctor) return res.status(404).json({ message: "Doctor not found" });

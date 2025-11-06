@@ -9,7 +9,6 @@ const doctorSchema = new mongoose.Schema(
     },
     specialization: String,
     experience_years: Number,
-    contact_info: String,
     consultation_type: {
       type: String,
       enum: ["ONLINE", "OFFLINE", "BOTH"],

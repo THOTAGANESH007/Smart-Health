@@ -25,6 +25,12 @@ const userSchema = new mongoose.Schema(
     forgot_password_otp: { type: String, default: null },
     forgot_password_expired: { type: Date, default: "" },
     fcmToken: { type: String, default: null }, // Field for FCM token (firebase cloud messaging)
+    patientId: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" },
+    doctorId: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor" },
+    receptionistId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Receptionist",
+    },
   },
   { timestamps: true }
 );

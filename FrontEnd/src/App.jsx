@@ -17,12 +17,16 @@ import NotificationList from "./components/remainders/NotificationList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HospitalLanding from "./components/HospitalLanding";
+import GetPatientAppointments from "./components/appointments/GetPatientAppointments";
+import PatientAppointments from "./components/appointments/PatientAppointments";
+import AdminAppointments from "./components/appointments/AdminAppointments";
+import DoctorAppointments from "./components/appointments/DoctorAppointments";
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <Routes>
-        <Route path="/" element={<HospitalLanding/>} />
+        <Route path="/" element={<HospitalLanding />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/analytics" element={<AnalyticsDashboard />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
@@ -34,6 +38,10 @@ function App() {
         <Route path="/video" element={<CallComponent />} />
         <Route path="/doctor-search" element={<DoctorSearch />} />
         <Route path="/patient-search" element={<PatientSearch />} />
+        <Route path="/app-patient" element={<PatientAppointments />} />
+        <Route path="/app-doctor" element={<DoctorAppointments />} />
+        <Route path="/app-admin" element={<AdminAppointments />} />
+        <Route path="/get-app-patient" element={<GetPatientAppointments />} />
         <Route
           path="/admin-send-notification"
           element={<AdminNotificationSender />}

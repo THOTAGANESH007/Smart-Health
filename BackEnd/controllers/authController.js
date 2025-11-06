@@ -42,7 +42,7 @@ export async function signup(req, res) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Step 1: Create User record
+    // Step 1: Create the base User record
     const user = await User.create({
       name,
       email,
@@ -51,51 +51,68 @@ export async function signup(req, res) {
       phone,
     });
 
-    // Step 2: Create corresponding role-based profile
+    // Step 2: Create corresponding profile and get its _id
+    let profileId = null;
+
     switch (role) {
-      case "PATIENT":
-        await Patient.create({
+      case "PATIENT": {
+        const patient = await Patient.create({
           userId: user._id,
           age: null,
           address: "",
           disease_details: "",
           blood_group: "",
         });
+        profileId = patient._id;
         break;
-      case "DOCTOR":
-        await Doctor.create({
+      }
+
+      case "DOCTOR": {
+        const doctor = await Doctor.create({
           userId: user._id,
           specialization: "",
+          experience_years: 1,
           contact_info: phone,
           consultation_type: "BOTH",
           availability_schedule: {},
+          rating: 4,
+          feedbackCount: 0,
+          totalRating: 60,
         });
+        profileId = doctor._id;
         break;
+      }
 
-      case "RECEPTIONIST":
-        await Receptionist.create({
+      case "RECEPTIONIST": {
+        const receptionist = await Receptionist.create({
           userId: user._id,
           contact_info: phone,
         });
+        profileId = receptionist._id;
         break;
+      }
 
       case "ADMIN":
-        // no separate collection needed
+        // no separate profile
         break;
 
       default:
-        // console.warn(`Unknown role: ${role}`);
         break;
     }
 
-    // Step 3: Send success response
+    // Step 3: Update User with the role-based profile _id
+    if (profileId) {
+      const updateField = role.toLowerCase() + "Id"; // e.g., doctorId, patientId, receptionistId
+      await User.findByIdAndUpdate(user._id, { [updateField]: profileId });
+    }
+
     res.status(201).json({
       message: "User registered successfully",
       userId: user._id,
       role: user.role,
     });
   } catch (err) {
-    // console.error("Signup error:", err);
+    console.error("Signup error:", err);
     res.status(500).json({ error: err.message });
   }
 }
