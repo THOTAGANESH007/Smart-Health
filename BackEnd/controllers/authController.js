@@ -173,12 +173,23 @@ export async function signin(req, res) {
 // Signout
 export async function signout(req, res) {
   try {
-    res.clearCookie("auth_token", { httpOnly: true, sameSite: "Strict" });
-    res.json({ message: "Signout successful" });
+   // console.log("Before clearing:", req.cookies);
+
+    res.clearCookie("auth_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/", // MUST match cookie path
+    });
+
+    //console.log("After clearing:", req.cookies);
+    res.status(200).json({ message: "Signout successful" });
   } catch (err) {
+    console.error("Signout error:", err);
     res.status(500).json({ error: err.message });
   }
 }
+
 
 //Forgot Password Controller
 export async function forgotPassword(req, res) {

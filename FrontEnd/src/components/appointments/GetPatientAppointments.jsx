@@ -1,14 +1,27 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Calendar, Clock, MessageCircle, User } from "lucide-react";
+import { Calendar, Clock, MessageCircle, User, Star, X } from "lucide-react";
 
 const GetPatientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [feedbackModal, setFeedbackModal] = useState({
+    isOpen: false,
+    doctorId: null,
+    appointmentId: null,
+    doctorName: "",
+  });
+  const [feedbackData, setFeedbackData] = useState({
+    rating: 0,
+    comment: "",
+  });
+  const [hoverRating, setHoverRating] = useState(0);
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
+
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const axiosConfig = { withCredentials: true };
 
-  // Fetch patient’s appointments
+  // Fetch patient's appointments
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -25,6 +38,69 @@ const GetPatientAppointments = () => {
     };
     fetchAppointments();
   }, []);
+
+  // Open feedback modal
+  const openFeedbackModal = (appointment) => {
+    const doctor = appointment.doctorId;
+    setFeedbackModal({
+      isOpen: true,
+      doctorId: doctor._id,
+      appointmentId: appointment._id,
+      doctorName: doctor?.userId?.name || "Doctor",
+    });
+    setFeedbackData({ rating: 0, comment: "" });
+    setHoverRating(0);
+  };
+
+  // Close feedback modal
+  const closeFeedbackModal = () => {
+    setFeedbackModal({
+      isOpen: false,
+      doctorId: null,
+      appointmentId: null,
+      doctorName: "",
+    });
+    setFeedbackData({ rating: 0, comment: "" });
+    setHoverRating(0);
+  };
+
+  // Submit feedback
+  const submitFeedback = async () => {
+    if (feedbackData.rating === 0) {
+      alert("Please select a rating");
+      return;
+    }
+
+    try {
+      setSubmittingFeedback(true);
+     // console.log(feedbackModal.doctorId,feedbackModal.appointmentId,feedbackData.comment)
+      const response = await axios.post(
+        `${baseUrl}/api/feedback/${feedbackModal.doctorId}/${feedbackModal.appointmentId}`,
+        {
+          rating: feedbackData.rating,
+          comments: feedbackData.comment,
+        },
+        axiosConfig
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        alert("Feedback submitted successfully!");
+        closeFeedbackModal();
+        
+        // Optionally refresh appointments to update feedback status
+        const res = await axios.get(
+          `${baseUrl}/api/appointments/getPatientAppointments`,
+          axiosConfig
+        );
+        setAppointments(res.data.appointments || []);
+      }
+    } catch (err) {
+      console.error("Error submitting feedback:", err);
+      alert(err.response?.data?.message || "Failed to submit feedback. Please try again.");
+    } finally {
+      setSubmittingFeedback(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -43,7 +119,7 @@ const GetPatientAppointments = () => {
   }
 
   // Helper: define the order of statuses
-  const statusSteps = ["PENDING", "CONFIRMED", "IN_PROGRESS", "COMPLETED"];
+  const statusSteps = ["PENDING", "CONFIRMED", "COMPLETED"];
 
   // Helper to get the current step index
   const getCurrentStepIndex = (status) => statusSteps.indexOf(status);
@@ -69,6 +145,7 @@ const GetPatientAppointments = () => {
           });
 
           const currentStep = getCurrentStepIndex(appointment.status);
+          const isCompleted = appointment.status === "COMPLETED";
 
           return (
             <div
@@ -112,7 +189,7 @@ const GetPatientAppointments = () => {
                   </div>
                 </div>
 
-                {/* Flipkart-style Status Tracker */}
+                {/* Status Tracker */}
                 <div className="mt-4">
                   <div className="flex items-center justify-between relative">
                     {statusSteps.map((step, index) => (
@@ -163,12 +240,118 @@ const GetPatientAppointments = () => {
                       ❌ Appointment Cancelled
                     </div>
                   )}
+
+                  {/* Feedback Button for Completed Appointments */}
+                  {isCompleted && (
+                    <div className="mt-4">
+                      <button
+                        onClick={() => openFeedbackModal(appointment)}
+                        className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                      >
+                        <Star size={18} />
+                        Give Feedback
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* Feedback Modal */}
+      {feedbackModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-fadeIn">
+            {/* Close button */}
+            <button
+              onClick={closeFeedbackModal}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Modal Header */}
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                Rate Your Experience
+              </h3>
+              <p className="text-gray-600">
+                How was your appointment with{" "}
+                <span className="font-semibold text-indigo-600">
+                  {feedbackModal.doctorName}
+                </span>
+                ?
+              </p>
+            </div>
+
+            {/* Star Rating */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Rating
+              </label>
+              <div className="flex justify-center gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() =>
+                      setFeedbackData({ ...feedbackData, rating: star })
+                    }
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    className="transition-transform hover:scale-110"
+                  >
+                    <Star
+                      size={40}
+                      className={`${
+                        star <= (hoverRating || feedbackData.rating)
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300"
+                      } transition-colors`}
+                    />
+                  </button>
+                ))}
+              </div>
+              {feedbackData.rating > 0 && (
+                <p className="text-center text-sm text-gray-600 mt-2">
+                  {feedbackData.rating === 5 && "Excellent!"}
+                  {feedbackData.rating === 4 && "Great!"}
+                  {feedbackData.rating === 3 && "Good"}
+                  {feedbackData.rating === 2 && "Fair"}
+                  {feedbackData.rating === 1 && "Poor"}
+                </p>
+              )}
+            </div>
+
+            {/* Comment */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Comment (Optional)
+              </label>
+              <textarea
+                value={feedbackData.comment}
+                onChange={(e) =>
+                  setFeedbackData({ ...feedbackData, comment: e.target.value })
+                }
+                placeholder="Share your experience..."
+                rows="4"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={submitFeedback}
+              disabled={submittingFeedback || feedbackData.rating === 0}
+              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+            >
+              {submittingFeedback ? "Submitting..." : "Submit Feedback"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

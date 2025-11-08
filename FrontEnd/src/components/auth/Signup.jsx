@@ -45,6 +45,7 @@ const SignUp = () => {
           email,
           phone,
           password,
+          role:"PATIENT"
         }
       );
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { protect } from "../middlewares/authMiddleware.js";
+import { authorize, protect } from "../middlewares/authMiddleware.js";
 import {
   completeLabTest,
   getPatientLabTests,
@@ -13,7 +13,7 @@ import {
 const labRouter = express.Router();
 
 // Doctor creates a lab test
-labRouter.post("/create/:patientId", protect, createLabTest);
+labRouter.post("/create/:patientId", protect, authorize("DOCTOR"), createLabTest);
 
 // Lab technician completes a lab test
 labRouter.put("/complete/:labTestId", protect, completeLabTest);

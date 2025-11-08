@@ -10,7 +10,7 @@ const feedbackRouter = express.Router();
 
 // Add or update feedback for an appointment (patient only)
 feedbackRouter.post(
-  "/:doctorId/:appointmentId,",
+  "/:doctorId/:appointmentId",
   protect,
   authorize("PATIENT"),
   addFeedback

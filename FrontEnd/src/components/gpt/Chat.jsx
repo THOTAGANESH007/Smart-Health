@@ -105,7 +105,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex flex-col  bg-gradient-to-br from-gray-50 to-gray-100 h-full">
       {/* Header */}
       <div className="bg-white border-b px-6 py-4 shadow-sm">
         <div className="flex items-center gap-3">

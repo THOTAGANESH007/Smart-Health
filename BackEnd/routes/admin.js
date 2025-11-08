@@ -17,9 +17,9 @@ const adminRouter = express.Router();
 // Admin creates new user
 adminRouter.post(
   "/create-user",
-  protect,
-  authorize("ADMIN"),
-  createUserByAdmin
+  //protect,
+  //authorize("ADMIN"),
+  createUserByAdmin,addDoctorDetails
 );
 
 // Admin creates doctors and receptionists
@@ -39,8 +39,8 @@ adminRouter.post(
 
 adminRouter.delete(
   "/delete-doctor/:userId",
-  protect,
-  authorize("ADMIN"),
+  // protect,
+  // authorize("ADMIN"),
   deleteDoctor
 );
 adminRouter.delete(

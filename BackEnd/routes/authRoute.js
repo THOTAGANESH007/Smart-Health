@@ -19,11 +19,11 @@ const authRouter = express.Router();
 // Authentication Routes
 authRouter.post(
   "/signup",
-  [body("role").isIn(["PATIENT", "DOCTOR", "RECEPTIONIST", "ADMIN"])],
+  //[body("role").isIn(["PATIENT", "DOCTOR", "RECEPTIONIST", "ADMIN"])],
   signup
 );
 authRouter.post("/signin", signin);
-authRouter.post("/signout", protect, signout);
+authRouter.post("/signout", signout);
 
 // User Profile Routes
 authRouter.put("/update-user", protect, updateUserDetails);

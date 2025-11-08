@@ -26,33 +26,93 @@ import UpdateLabTest from "./components/labtests/UpdateLabTest";
 import PatientLabTests from "./components/labtests/PatientLabTests";
 import PatientPrescriptions from "./components/prescriptions/PatientPrescriptions";
 import CreatePrescription from "./components/prescriptions/CreatePrescription";
+import Header from "./components/Header";
+import PatientHomepage from "./components/PatientHomepage";
+import DoctorHomepage from "./components/DoctorHomepage";
+import AdminHomepage from "./components/AdminHomepage";
+import Feedback from "./components/FeedBack";
+import MyFeedback from "./components/MyFeedback";
+import ManageDoctors from "./components/ManageDoctors";
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <Routes>
+        <Route path="/patient" element={<PatientHomepage />}>
+           
+          <Route path="app-patient" element={<PatientAppointments />} />
+          <Route path="video" element={<CallComponent />} />
+          <Route path="chat" element={<Chat />} />
+           <Route path="feedback" element={<MyFeedback />} />
+          <Route path="pres-patient" element={<PatientPrescriptions />} />
+          <Route path="lab-patient-test" element={<PatientLabTests />} />
+          <Route path="myappointments" element={<GetPatientAppointments />} />
+        </Route>
+
+
+        <Route path="/doctor" element={<DoctorHomepage/>}>
+         
+          <Route path="app-doctor" element={<DoctorAppointments />} />
+          <Route path="video" element={<CallComponent />} />
+          <Route path="pres-create" element={<CreatePrescription />} />
+          <Route path="lab-update" element={<UpdateLabTest />} />
+          <Route path="lab-create" element={<CreateLabTest />} />
+          {/* <Route path="myappointments" element={<GetPatientAppointments />} /> */}
+        </Route>
+
+        <Route path="/admin" element={<AdminHomepage/>}>
+         
+          <Route path="dashboard" element={<AnalyticsDashboard />} />
+          <Route path="app-admin" element={<AdminAppointments />} />
+           <Route
+          path="send-notification"
+          element={<AdminNotificationSender />}
+        />
+        <Route
+          path="schedule-notification"
+          element={
+             <ScheduleNotification />
+          }
+        />
+        <Route
+          path="scheduled-list"
+          element={
+            
+              <NotificationList />
+            
+          }
+        />
+          
+        
+          {/* <Route path="myappointments" element={<GetPatientAppointments />} /> */}
+        </Route>
+        
+
+
+         <Route path="/manage" element={<ManageDoctors />} />
+        {/* <Route path="/pat-home" element={<PatientHomepage/>}/> */}
         <Route path="/" element={<HospitalLanding />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/analytics" element={<AnalyticsDashboard />} />
+        {/* <Route path="/analytics" element={<AnalyticsDashboard />} /> */}
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/update-user" element={<UpdateUser />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/video" element={<CallComponent />} />
+        {/* <Route path="/chat" element={<Chat />} />
+        <Route path="/video" element={<CallComponent />} /> */}
         <Route path="/doctor-search" element={<DoctorSearch />} />
         <Route path="/patient-search" element={<PatientSearch />} />
-        <Route path="/app-patient" element={<PatientAppointments />} />
-        <Route path="/app-doctor" element={<DoctorAppointments />} />
-        <Route path="/app-admin" element={<AdminAppointments />} />
-        <Route path="/get-app-patient" element={<GetPatientAppointments />} />
-        <Route path="/lab-create" element={<CreateLabTest />} />
-        <Route path="/lab-update" element={<UpdateLabTest />} />
-        <Route path="/lab-patient-tests" element={<PatientLabTests />} />
-        <Route path="/pres-patient" element={<PatientPrescriptions />} />
-        <Route path="/pres-create" element={<CreatePrescription />} />
-        <Route
+        {/* <Route path="/app-patient" element={<PatientAppointments />} /> */}
+        {/* <Route path="/app-doctor" element={<DoctorAppointments />} /> */}
+        {/* <Route path="/app-admin" element={<AdminAppointments />} /> */}
+        {/* <Route path="/get-app-patient" element={<GetPatientAppointments />} /> */}
+        {/* <Route path="/lab-create" element={<CreateLabTest />} /> */}
+        {/* <Route path="/lab-update" element={<UpdateLabTest />} /> */}
+        {/* <Route path="/lab-patient-tests" element={<PatientLabTests />} /> */}
+        {/* <Route path="/pres-patient" element={<PatientPrescriptions />} /> */}
+        {/* <Route path="/pres-create" element={<CreatePrescription />} /> */}
+        {/* <Route
           path="/admin-send-notification"
           element={<AdminNotificationSender />}
         />
@@ -77,7 +137,7 @@ function App() {
               <NotificationList />
             </div>
           }
-        />
+        /> */}
       </Routes>
 
       {/* Toast Notifications (Global) */}

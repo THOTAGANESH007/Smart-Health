@@ -17,7 +17,7 @@ const VerifyOTP = () => {
     setError("");
 
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `${
           import.meta.env.VITE_API_BASE_URL
         }/api/auth/verify-forgot-password-otp`,
@@ -47,7 +47,7 @@ const VerifyOTP = () => {
     setError("");
 
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/auth/forgot-password`,
         { email }
       );

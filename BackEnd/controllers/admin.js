@@ -4,7 +4,7 @@ import Doctor from "../models/Doctor.js";
 import Receptionist from "../models/Receptionist.js";
 
 // Create a new user (Admin only)
-export const createUserByAdmin = async (req, res) => {
+export const createUserByAdmin = async (req, res,next) => {
   try {
     const { name, email, phone, password, role } = req.body;
 
@@ -23,12 +23,13 @@ export const createUserByAdmin = async (req, res) => {
       role,
       password_hash,
     });
-
-    res.status(201).json({
-      message: `${role} user created successfully`,
-      userId: user._id,
-      redirectTo: `/api/admin/add-${role.toLowerCase()}-details/${user._id}`,
-    });
+     req.userId=user._id;
+    // res.status(201).json({
+    //   message: `${role} user created successfully`,
+    //   userId: user._id,
+    //   redirectTo: `/api/admin/add-${role.toLowerCase()}-details/${user._id}`,
+    // });
+    next();
   } catch (err) {
     res
       .status(500)
@@ -38,14 +39,11 @@ export const createUserByAdmin = async (req, res) => {
 
 export const addDoctorDetails = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const  userId  = req.userId;
     const {
       specialization,
       experience_years,
-      contact_info,
       consultation_type,
-      availability_schedule,
-      rating,
     } = req.body;
 
     // Check if doctor details already exist
@@ -58,10 +56,7 @@ export const addDoctorDetails = async (req, res) => {
       userId,
       specialization,
       experience_years,
-      contact_info,
       consultation_type,
-      availability_schedule,
-      rating,
     });
 
     res.status(201).json({

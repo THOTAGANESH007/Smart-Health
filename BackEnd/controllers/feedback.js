@@ -6,10 +6,10 @@ import FeedBack from "../models/FeedBack.js";
  */
 export const addFeedback = async (req, res) => {
   try {
-    const { rating, comments, sentiment } = req.body;
+    const { rating, comments } = req.body;
     const { doctorId, appointmentId } = req.params;
-    const patientId = req.user._id;
-
+    const patientId = req.user.patientId;
+    //console.log(doctorId,appointmentId,rating)
     // Ensure the doctor exists
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
@@ -36,7 +36,6 @@ export const addFeedback = async (req, res) => {
       appointmentId,
       rating,
       comments,
-      sentiment,
     });
 
     // Update doctor's overall rating
@@ -97,11 +96,18 @@ export const getDoctorFeedback = async (req, res) => {
  */
 export const getPatientFeedback = async (req, res) => {
   try {
-    const patientId = req.user._id;
+    const patientId = req.user.patientId;
 
     const feedbacks = await FeedBack.find({ patientId })
-      .select("rating comments sentiment doctorId appointmentId createdAt")
-      .populate("doctorId", "userId name specialization rating")
+      .select("rating comments doctorId appointmentId")
+      .populate({
+        path: "doctorId",
+        select: "specialization rating userId",
+        populate: {
+          path: "userId",
+          select: "name profile email",
+        },
+      })
       .populate("appointmentId", "scheduled_date status")
       .sort({ createdAt: -1 });
 
