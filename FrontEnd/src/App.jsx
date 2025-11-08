@@ -39,19 +39,16 @@ function App() {
     <div className="min-h-screen bg-gray-100 p-6">
       <Routes>
         <Route path="/patient" element={<PatientHomepage />}>
-           
           <Route path="app-patient" element={<PatientAppointments />} />
           <Route path="video" element={<CallComponent />} />
           <Route path="chat" element={<Chat />} />
-           <Route path="feedback" element={<MyFeedback />} />
+          <Route path="feedback" element={<MyFeedback />} />
           <Route path="pres-patient" element={<PatientPrescriptions />} />
           <Route path="lab-patient-test" element={<PatientLabTests />} />
           <Route path="myappointments" element={<GetPatientAppointments />} />
         </Route>
 
-
-        <Route path="/doctor" element={<DoctorHomepage/>}>
-         
+        <Route path="/doctor" element={<DoctorHomepage />}>
           <Route path="app-doctor" element={<DoctorAppointments />} />
           <Route path="video" element={<CallComponent />} />
           <Route path="pres-create" element={<CreatePrescription />} />
@@ -60,36 +57,23 @@ function App() {
           {/* <Route path="myappointments" element={<GetPatientAppointments />} /> */}
         </Route>
 
-        <Route path="/admin" element={<AdminHomepage/>}>
-         
+        <Route path="/admin" element={<AdminHomepage />}>
           <Route path="dashboard" element={<AnalyticsDashboard />} />
           <Route path="app-admin" element={<AdminAppointments />} />
-           <Route
-          path="send-notification"
-          element={<AdminNotificationSender />}
-        />
-        <Route
-          path="schedule-notification"
-          element={
-             <ScheduleNotification />
-          }
-        />
-        <Route
-          path="scheduled-list"
-          element={
-            
-              <NotificationList />
-            
-          }
-        />
-          
-        
+          <Route
+            path="send-notification"
+            element={<AdminNotificationSender />}
+          />
+          <Route
+            path="schedule-notification"
+            element={<ScheduleNotification />}
+          />
+          <Route path="scheduled-list" element={<NotificationList />} />
+
           {/* <Route path="myappointments" element={<GetPatientAppointments />} /> */}
         </Route>
-        
 
-
-         <Route path="/manage" element={<ManageDoctors />} />
+        <Route path="/manage" element={<ManageDoctors />} />
         {/* <Route path="/pat-home" element={<PatientHomepage/>}/> */}
         <Route path="/" element={<HospitalLanding />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -138,6 +122,10 @@ function App() {
             </div>
           }
         /> */}
+
+        {/* <Route path="/list" element={<DoctorList />} />
+        <Route path="/popup" element={<IncomingCallPopup />} />
+        <Route path="/call/:roomId" element={<CallComponent />} /> */}
       </Routes>
 
       {/* Toast Notifications (Global) */}

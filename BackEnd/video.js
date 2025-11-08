@@ -1,5 +1,4 @@
 import { Server } from "socket.io";
-import { protectVideo } from "./utils/protectVideo.js";
 
 export const initSocket = (server) => {
   const io = new Server(server, {
@@ -10,74 +9,120 @@ export const initSocket = (server) => {
     },
   });
 
-  /*
-  io.use(async (socket, next) => {
-    try {
-      const token = socket.handshake.auth.token; // sent from frontend
-      const user = await protectVideo(token); // call our helper
-      socket.user = user;
-      next();
-    } catch (err) {
-      console.error("Socket auth failed:", err.message);
-      next(new Error("Authentication error"));
+  const connectedUsers = {}; // profileId -> socket.id
+  const activeRooms = {}; // roomId -> Map(socket.id -> username)
+
+  // Helper to broadcast the full, updated user list for a room
+  const broadcastUserList = (roomId) => {
+    if (activeRooms[roomId]) {
+      const users = Array.from(activeRooms[roomId].values()); // Send an array of usernames
+      io.to(roomId).emit("update-user-list", users);
     }
-  });
-  */
+  };
 
   io.on("connection", (socket) => {
-    // console.log("🔌 New socket connected:", socket.id);
+    socket.on("register-user", (profileId) => {
+      connectedUsers[profileId] = socket.id;
+    });
+
+    socket.on("initiate-call", ({ doctorId, patientId, roomId, callId }) => {
+      const doctorSocket = connectedUsers[doctorId];
+      if (doctorSocket) {
+        io.to(doctorSocket).emit("incoming-call", {
+          from: patientId,
+          roomId,
+          callId,
+        });
+      } else {
+        io.to(socket.id).emit("doctor-offline", { doctorId });
+      }
+    });
+
+    socket.on("accept-call", ({ patientId, roomId }) => {
+      const patientSocket = connectedUsers[patientId];
+      if (patientSocket) io.to(patientSocket).emit("call-accepted", { roomId });
+    });
+
+    socket.on("reject-call", ({ patientId }) => {
+      const patientSocket = connectedUsers[patientId];
+      if (patientSocket) io.to(patientSocket).emit("call-rejected");
+    });
+
+    socket.on("cancel-call", ({ doctorId }) => {
+      const doctorSocket = connectedUsers[doctorId];
+      if (doctorSocket) io.to(doctorSocket).emit("call-canceled");
+    });
 
     socket.on("join-room", ({ roomId, username }) => {
-      socket.username = username;
+      socket.username = username || "Anonymous";
       socket.join(roomId);
-      // console.log(`👥 ${username} (${socket.id}) joined room ${roomId}`);
 
-      socket.broadcast.to(roomId).emit("user-joined", socket.id, username);
+      if (!activeRooms[roomId]) {
+        activeRooms[roomId] = new Map();
+      }
+      activeRooms[roomId].set(socket.id, socket.username);
 
-      // Handle WebRTC offers
-      socket.on("offer", (data) => {
-        io.to(data.target).emit("offer", {
-          sdp: data.sdp,
-          caller: socket.id,
-          name: socket.username,
-        });
-      });
+      const existingUsers = [];
+      for (const [sid, name] of activeRooms[roomId].entries()) {
+        if (sid !== socket.id) {
+          existingUsers.push({ id: sid, username: name });
+        }
+      }
 
-      // Handle answers
-      socket.on("answer", (data) => {
-        io.to(data.target).emit("answer", { sdp: data.sdp, caller: socket.id });
-      });
+      // The new user gets a list of everyone already in the room
+      socket.emit("existing-users", existingUsers);
 
-      // Handle ICE candidates
-      socket.on("ice-candidate", (data) => {
-        io.to(data.target).emit("ice-candidate", {
-          candidate: data.candidate,
-          caller: socket.id,
-        });
-      });
+      broadcastUserList(roomId);
+    });
 
-      // Chat message broadcast
-      socket.on("chat-message", (data) => {
-        io.to(roomId).emit("chat-message", {
-          sender: socket.username,
-          message: data.message,
-        });
-      });
-
-      // Leave room
-      socket.on("leave-room", () => {
-        socket.leave(roomId);
-        socket.broadcast.to(roomId).emit("user-left", socket.id);
-        // console.log(`🚪 ${socket.id} left room ${roomId}`);
-      });
-
-      socket.on("disconnect", () => {
-        socket.broadcast.to(roomId).emit("user-left", socket.id);
-        // console.log(`${socket.id} disconnected from room ${roomId}`);
+    socket.on("offer", (data) => {
+      io.to(data.target).emit("offer", {
+        sdp: data.sdp,
+        caller: socket.id,
+        name: socket.username,
       });
     });
+
+    socket.on("answer", (data) => {
+      io.to(data.target).emit("answer", { sdp: data.sdp, caller: socket.id });
+    });
+
+    socket.on("ice-candidate", (data) => {
+      io.to(data.target).emit("ice-candidate", {
+        candidate: data.candidate,
+        caller: socket.id,
+      });
+    });
+
+    socket.on("chat-message", (data) => {
+      io.to(data.roomId).emit("chat-message", {
+        sender: socket.username,
+        message: data.message,
+      });
+    });
+
+    const handleLeave = () => {
+      for (const rId in activeRooms) {
+        if (activeRooms[rId]?.has(socket.id)) {
+          activeRooms[rId].delete(socket.id);
+          // Tell remaining users who left so they can clean up the connection
+          socket.to(rId).emit("user-left", { peerId: socket.id });
+          if (activeRooms[rId].size === 0) {
+            delete activeRooms[rId];
+          } else {
+            broadcastUserList(rId);
+          }
+          break;
+        }
+      }
+      for (const pid in connectedUsers) {
+        if (connectedUsers[pid] === socket.id) delete connectedUsers[pid];
+      }
+    };
+
+    socket.on("leave-room", handleLeave);
+    socket.on("disconnect", handleLeave);
   });
 
-  // console.log("Socket.IO signaling server initialized");
   return io;
 };

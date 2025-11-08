@@ -15,6 +15,7 @@ import { initSocket } from "./video.js";
 import http from "http";
 import scheduleRouter from "./routes/scheduleRoutes.js";
 import startScheduler from "./scheduler.js";
+import callRouter from "./routes/callRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -29,7 +30,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173", // for local development
   "https://smart-health-major.vercel.app", // for deployed frontend
-  "https://localhost:7777"
+  "https://localhost:7777",
 ];
 
 app.use(
@@ -56,6 +57,7 @@ app.use("/api/prescriptions", prescriptionRouter);
 app.use("/api/labtests", labRouter);
 app.use("/api/notifications", notificationRouter);
 app.use("/api/schedule", scheduleRouter);
+app.use("/api/calls", callRouter);
 // Test route
 // app.get("/", (req, res) => {
 //   res.send("SMART HEALTH API is running!");
