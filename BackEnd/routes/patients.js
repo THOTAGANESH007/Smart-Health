@@ -4,6 +4,7 @@ import {
   getAllPatients,
   getAllUsers,
   getPatientById,
+  getPatientHealthCard,
   updatePatient,
 } from "../controllers/patients.js";
 import { authorize, protect } from "../middlewares/authMiddleware.js";
@@ -14,4 +15,5 @@ patientsRouter.get("/getall-patients", getAllPatients);
 patientsRouter.put("/update-patient/:id", protect, updatePatient);
 patientsRouter.delete("/delete-patient/:id", protect, deletePatient);
 patientsRouter.get("/getAllUsers", getAllUsers);
+patientsRouter.get("/get-patient-health-card/:id", getPatientHealthCard);
 export default patientsRouter;

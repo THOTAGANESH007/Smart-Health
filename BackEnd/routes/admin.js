@@ -17,53 +17,26 @@ const adminRouter = express.Router();
 // Admin creates new user
 adminRouter.post(
   "/create-user",
-  //protect,
-  //authorize("ADMIN"),
-  createUserByAdmin,addDoctorDetails
-);
-
-// Admin creates doctors and receptionists
-adminRouter.post(
-  "/add-doctor-details/:userId",
   protect,
   authorize("ADMIN"),
+  createUserByAdmin,
   addDoctorDetails
-);
-
-adminRouter.post(
-  "/add-receptionist-details/:userId",
-  protect,
-  authorize("ADMIN"),
-  addReceptionistDetails
 );
 
 adminRouter.delete(
   "/delete-doctor/:userId",
-  // protect,
-  // authorize("ADMIN"),
+  protect,
+  authorize("ADMIN"),
   deleteDoctor
 );
-adminRouter.delete(
-  "/delete-receptionist/:userId",
-  protect,
-  authorize("ADMIN"),
-  deleteReceptionist
-);
 
-adminRouter.get("/getAllDoctors", getAllDoctors);
-adminRouter.get("/doctors/:userId", protect, getDoctorByUserId);
+adminRouter.get("/getAllDoctors", protect, getAllDoctors);
 
 adminRouter.get(
-  "/getAllReceptionists",
+  "/get-all-patients-health-cards",
   protect,
-  authorize("ADMIN"),
-  getAllReceptionists
-);
-adminRouter.get(
-  "/receptionists/:userId",
-  protect,
-  authorize("ADMIN"),
-  getReceptionistByUserId
+  authorize("ADMIN", "DOCTOR"),
+  getAllPatientsHealthCards
 );
 
 export default adminRouter;

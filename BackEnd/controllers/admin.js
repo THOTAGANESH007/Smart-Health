@@ -2,9 +2,10 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import Doctor from "../models/Doctor.js";
 import Receptionist from "../models/Receptionist.js";
+import Patient from "../models/Patient.js";
 
 // Create a new user (Admin only)
-export const createUserByAdmin = async (req, res,next) => {
+export const createUserByAdmin = async (req, res, next) => {
   try {
     const { name, email, phone, password, role } = req.body;
 
@@ -23,7 +24,7 @@ export const createUserByAdmin = async (req, res,next) => {
       role,
       password_hash,
     });
-     req.userId=user._id;
+    req.userId = user._id;
     // res.status(201).json({
     //   message: `${role} user created successfully`,
     //   userId: user._id,
@@ -39,12 +40,8 @@ export const createUserByAdmin = async (req, res,next) => {
 
 export const addDoctorDetails = async (req, res) => {
   try {
-    const  userId  = req.userId;
-    const {
-      specialization,
-      experience_years,
-      consultation_type,
-    } = req.body;
+    const userId = req.userId;
+    const { specialization, experience_years, consultation_type } = req.body;
 
     // Check if doctor details already exist
     const exists = await Doctor.findOne({ userId });
@@ -71,36 +68,6 @@ export const addDoctorDetails = async (req, res) => {
   }
 };
 
-export const addReceptionistDetails = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const { assigned_doctor_id, contact_info } = req.body;
-
-    // Check if receptionist details already exist
-    const exists = await Receptionist.findOne({ userId });
-    if (exists)
-      return res
-        .status(400)
-        .json({ message: "Receptionist details already exist" });
-
-    const receptionist = await Receptionist.create({
-      userId,
-      assigned_doctor_id,
-      contact_info,
-    });
-
-    res.status(201).json({
-      message: "Receptionist details added successfully",
-      receptionist,
-    });
-  } catch (err) {
-    res.status(500).json({
-      message: "Error adding receptionist details",
-      error: err.message,
-    });
-  }
-};
-
 export const deleteDoctor = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -119,28 +86,10 @@ export const deleteDoctor = async (req, res) => {
   }
 };
 
-export const deleteReceptionist = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const receptionist = await Receptionist.findOneAndDelete({ userId });
-    if (!receptionist)
-      return res.status(404).json({ message: "Receptionist not found" });
-    await User.findByIdAndDelete(userId);
-
-    res.status(200).json({
-      message: "Receptionist and associated user deleted successfully",
-    });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error deleting receptionist", error: err.message });
-  }
-};
-
 export const getAllDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find()
+      .select("specialization experience_years consultation_type rating")
       .populate("userId", "name email phone role is_active profile")
       .exec();
     res.status(200).json({ doctors });
@@ -151,52 +100,15 @@ export const getAllDoctors = async (req, res) => {
   }
 };
 
-export const getDoctorByUserId = async (req, res) => {
+export const getAllPatientsHealthCards = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const doctor = await Doctor.findOne({ userId })
-      .populate("userId", "name email phone role is_active profile")
-      .exec();
+    const patients = await Patient.find()
+      .populate("userId", "name email phone profile")
+      .select("age gender address disease_details blood_group createdAt")
+      .sort({ createdAt: -1 });
 
-    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
-
-    res.status(200).json({ doctor });
+    res.status(200).json({ patients });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching doctor", error: err.message });
-  }
-};
-
-export const getAllReceptionists = async (req, res) => {
-  try {
-    const receptionists = await Receptionist.find()
-      .populate("userId", "name email phone role is_active")
-      .populate("assigned_doctor_id", "specialization")
-      .exec();
-    res.status(200).json({ receptionists });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching receptionists", error: err.message });
-  }
-};
-
-export const getReceptionistByUserId = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const receptionist = await Receptionist.findOne({ userId })
-      .populate("userId", "name email phone role is_active")
-      .populate("assigned_doctor_id", "specialization")
-      .exec();
-
-    if (!receptionist)
-      return res.status(404).json({ message: "Receptionist not found" });
-
-    res.status(200).json({ receptionist });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching receptionist", error: err.message });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
