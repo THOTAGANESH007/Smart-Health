@@ -13,13 +13,30 @@ export const updatePatient = async (req, res) => {
       return res.status(404).json({ message: "Patient not found" });
     }
 
-    // Update fields only if provided
+    // Update basic fields if provided
     if (age !== undefined) patient.age = age;
     if (gender !== undefined) patient.gender = gender;
     if (address !== undefined) patient.address = address;
-    if (disease_details !== undefined)
-      patient.disease_details = disease_details;
     if (blood_group !== undefined) patient.blood_group = blood_group;
+
+    // Safely handle disease_details merge
+    if (disease_details && typeof disease_details === "object") {
+      const validDiseaseFields = {
+        bp: ["HIGH", "NORMAL", "LOW"],
+        diabetes: ["YES", "NO"],
+        heart_disease: ["YES", "NO"],
+        asthma: ["YES", "NO"],
+      };
+
+      for (const [key, value] of Object.entries(disease_details)) {
+        if (
+          validDiseaseFields[key] &&
+          validDiseaseFields[key].includes(value.toUpperCase())
+        ) {
+          patient.disease_details[key] = value.toUpperCase();
+        }
+      }
+    }
 
     // Save updated patient
     const updatedPatient = await patient.save();
@@ -70,13 +87,12 @@ export async function getPatientById(req, res) {
 // Delete patient (deletes both Patient and linked User)
 export async function deletePatient(req, res) {
   try {
-    const { id } = req.params; // this is the Patient _id, not userId
+    const { id } = req.params; // Patient _id
 
-    // Find the patient by Patient ID first
     const patient = await Patient.findById(id);
     if (!patient) return res.status(404).json({ message: "Patient not found" });
 
-    // Delete both patient and the linked user
+    // Delete both patient and linked user
     await User.findByIdAndDelete(patient.userId);
     await Patient.findByIdAndDelete(id);
 
@@ -88,6 +104,7 @@ export async function deletePatient(req, res) {
   }
 }
 
+// Get all users
 export async function getAllUsers(req, res) {
   try {
     const patients = await User.find().select("_id name email phone role");
@@ -97,6 +114,7 @@ export async function getAllUsers(req, res) {
   }
 }
 
+// Get Patient Health Card
 export async function getPatientHealthCard(req, res) {
   try {
     const { patientId } = req.params;
