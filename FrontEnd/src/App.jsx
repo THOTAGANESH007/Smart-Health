@@ -33,6 +33,13 @@ import AdminHomepage from "./components/AdminHomepage";
 import Feedback from "./components/FeedBack";
 import MyFeedback from "./components/MyFeedback";
 import ManageDoctors from "./components/ManageDoctors";
+import HealthCard from "./components/HealthCard";
+import DoctorList from "./components/video/DoctorList";
+import IncomingCallPopup from "./components/video/IncomingCallPopup";
+import AllHealthCards from "./components/AllHealthCards";
+import UpdatePatientHealthCards from "./components/UpdatePatientHealthCards";
+import AllPatientsHealthCards from "./components/AllPatientsHealthCards";
+import DoctorFeedbacks from "./components/DoctorFeedbacks";
 
 function App() {
   return (
@@ -40,26 +47,36 @@ function App() {
       <Routes>
         <Route path="/patient" element={<PatientHomepage />}>
           <Route path="app-patient" element={<PatientAppointments />} />
-          <Route path="video" element={<CallComponent />} />
+          {/* <Route path="video" element={<CallComponent />} /> */}
           <Route path="chat" element={<Chat />} />
+           <Route path="healthcard" element={<HealthCard />} />
           <Route path="feedback" element={<MyFeedback />} />
           <Route path="pres-patient" element={<PatientPrescriptions />} />
           <Route path="lab-patient-test" element={<PatientLabTests />} />
           <Route path="myappointments" element={<GetPatientAppointments />} />
+          <Route path="list" element={<DoctorList />} />
+          <Route path="call/:roomId" element={<CallComponent />} />
         </Route>
 
         <Route path="/doctor" element={<DoctorHomepage />}>
           <Route path="app-doctor" element={<DoctorAppointments />} />
-          <Route path="video" element={<CallComponent />} />
+          <Route path="healthcards" element={<AllHealthCards />} />
+          <Route path="update-patient/:id" element={<UpdatePatientHealthCards />} />
+          {/* <Route path="video" element={<CallComponent />} /> */}
+           <Route path="call/:roomId" element={<CallComponent />} />
           <Route path="pres-create" element={<CreatePrescription />} />
           <Route path="lab-update" element={<UpdateLabTest />} />
           <Route path="lab-create" element={<CreateLabTest />} />
+          <Route path="popup" element={<IncomingCallPopup />} />
+           <Route path="myfeedback" element={<DoctorFeedbacks />} />
           {/* <Route path="myappointments" element={<GetPatientAppointments />} /> */}
         </Route>
 
         <Route path="/admin" element={<AdminHomepage />}>
           <Route path="dashboard" element={<AnalyticsDashboard />} />
           <Route path="app-admin" element={<AdminAppointments />} />
+          <Route path="allhealthcards" element={<AllPatientsHealthCards />} />
+          <Route path="manage-doctors" element={<ManageDoctors />} />
           <Route
             path="send-notification"
             element={<AdminNotificationSender />}
@@ -73,7 +90,6 @@ function App() {
           {/* <Route path="myappointments" element={<GetPatientAppointments />} /> */}
         </Route>
 
-        <Route path="/manage" element={<ManageDoctors />} />
         {/* <Route path="/pat-home" element={<PatientHomepage/>}/> */}
         <Route path="/" element={<HospitalLanding />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

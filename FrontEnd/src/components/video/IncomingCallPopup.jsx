@@ -42,7 +42,7 @@ const IncomingCallPopup = () => {
         patientId: incomingCall.from,
         roomId: incomingCall.roomId,
       });
-      navigate(`/call/${incomingCall.roomId}`);
+      navigate(`/doctor/call/${incomingCall.roomId}`);
       setIncomingCall(null);
     } catch (error) {
       console.error("Error accepting call:", error);

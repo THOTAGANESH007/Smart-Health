@@ -10,11 +10,12 @@ const Navigation = () => {
 
   const navItems = [
     { path: '/patient/app-patient', label: 'Create Appointments', icon: Calendar },
-    { path: '/patient/video', label: 'Video', icon: Video },
+    { path: '/patient/list', label: 'Video', icon: Video },
     { path: '/patient/chat', label: 'Chat', icon: MessageSquare },
     { path: '/patient/pres-patient', label: 'My Prescriptions', icon: FileText },
     { path: '/patient/lab-patient-test', label: 'My Lab Reports', icon: ClipboardList },
     { path: '/patient/myappointments', label: 'My Appointments', icon: Clock },
+      { path: '/patient/healthcard', label: 'My Health Card', icon: ClipboardList },
      { path: '/patient/feedback', label: 'Feedback', icon: FileText },
   ];
 

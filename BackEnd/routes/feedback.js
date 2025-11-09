@@ -17,7 +17,7 @@ feedbackRouter.post(
 );
 
 // Get all feedbacks for a doctor
-feedbackRouter.get("/doctor/:doctorId", protect, getDoctorFeedback);
+feedbackRouter.get("/doctor/:doctorId", getDoctorFeedback);
 
 // Get all feedbacks submitted by logged-in patient
 feedbackRouter.get(

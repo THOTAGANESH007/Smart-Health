@@ -40,7 +40,6 @@ export const updatePatient = async (req, res) => {
 
     // Save updated patient
     const updatedPatient = await patient.save();
-
     res.status(200).json({
       message: "Patient details updated successfully",
       data: updatedPatient,
@@ -117,9 +116,9 @@ export async function getAllUsers(req, res) {
 // Get Patient Health Card
 export async function getPatientHealthCard(req, res) {
   try {
-    const { patientId } = req.params;
+    const {id} = req.params;
 
-    const patient = await Patient.findById(patientId)
+    const patient = await Patient.findById(id)
       .select("age gender address disease_details blood_group userId")
       .populate("userId", "name email phone profile");
 

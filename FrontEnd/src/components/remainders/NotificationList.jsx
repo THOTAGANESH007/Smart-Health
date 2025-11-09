@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
+import { Bell, Trash2, CheckCircle2, AlertCircle } from "lucide-react";
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
@@ -34,48 +35,78 @@ const NotificationList = () => {
     fetchNotifications();
   }, []);
 
+  // Helper function to convert UTC date to IST for display
+  const toIST = (utcDate) => {
+    // The getTimezoneOffset() returns the difference between UTC and the user's local time in minutes.
+    // We convert it to milliseconds to counteract the browser's automatic timezone conversion.
+    const localTimezoneOffset = utcDate.getTimezoneOffset() * 60 * 1000;
+    // IST is 5 hours and 30 minutes ahead of UTC.
+    const istOffset = 5.5 * 60 * 60 * 1000;
+    // By adding both offsets to the original UTC time, we get a new date object
+    // that will display the correct IST time when formatted.
+    return new Date(utcDate.getTime() + istOffset + localTimezoneOffset);
+  };
+
   return (
-    <div className="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">
+    <div className="max-w-4xl mx-auto mt-10 p-4">
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
         Scheduled Notifications
       </h2>
       {notifications.length === 0 ? (
-        <p className="text-center text-gray-500">No scheduled notifications.</p>
+        <div className="text-center text-gray-500 bg-white p-10 rounded-xl shadow-md">
+          <Bell className="mx-auto h-10 w-10 text-gray-400 mb-4" />
+          <p>No scheduled notifications.</p>
+        </div>
       ) : (
-        <ul className="divide-y divide-gray-200">
-          {notifications.map((notif) => (
-            <li
-              key={notif._id}
-              className="py-3 flex justify-between items-center"
-            >
-              <div>
-                <p className="font-semibold">{notif.title}</p>
-                <p className="text-gray-600">{notif.message}</p>
-                <p className="text-sm text-gray-500">
-                  {format(
-                    new Date(notif.scheduledTime),
-                    "dd MMM yyyy, hh:mm a"
+        <div className="space-y-4">
+          {notifications.map((notif) => {
+            const scheduledTimeUTC = new Date(notif.scheduledTime);
+            const displayDate = toIST(scheduledTimeUTC);
+
+            return (
+              <div
+                key={notif._id}
+                className="bg-white p-5 rounded-xl shadow-md transition-shadow duration-300 hover:shadow-lg flex items-center justify-between"
+              >
+                <div className="flex items-center">
+                  <div className="mr-4">
+                    {notif.isSent ? (
+                      <CheckCircle2 className="text-green-500 h-6 w-6" />
+                    ) : (
+                      <AlertCircle className="text-yellow-500 h-6 w-6" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-lg text-gray-800">{notif.title}</p>
+                    <p className="text-gray-600">{notif.message}</p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {format(displayDate, "dd MMM yyyy, hh:mm a")}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <span
+                    className={`px-3 py-1 text-sm rounded-full ${
+                      notif.isSent
+                        ? "bg-green-100 text-green-800"
+                        : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {notif.isSent ? "Sent" : "Pending"}
+                  </span>
+                  {!notif.isSent && (
+                    <button
+                      className="ml-4 text-gray-500 hover:text-red-600 transition-colors duration-300"
+                      onClick={() => handleDelete(notif._id)}
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
                   )}
-                </p>
-                <p
-                  className={`text-sm ${
-                    notif.isSent ? "text-green-600" : "text-yellow-600"
-                  }`}
-                >
-                  {notif.isSent ? "Sent" : "Pending"}
-                </p>
+                </div>
               </div>
-              {!notif.isSent && (
-                <button
-                  className="text-red-600 hover:text-red-800"
-                  onClick={() => handleDelete(notif._id)}
-                >
-                  Delete
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
+            );
+          })}
+        </div>
       )}
     </div>
   );

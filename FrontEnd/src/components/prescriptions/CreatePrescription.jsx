@@ -19,6 +19,7 @@ const CreatePrescription = () => {
         `${baseUrl}/api/patients/getall-patients`,
         axiosConfig
       );
+      console.log(res)
       setPatients(res.data.patients || []);
     } catch (err) {
       console.error(err);

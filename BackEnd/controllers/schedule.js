@@ -22,7 +22,7 @@ export async function createScheduledNotification(req, res) {
 
 export async function getAllScheduledNotifications(req, res) {
   try {
-    const list = await ScheduledNotification.find().sort({ scheduledTime: 1 });
+    const list = await ScheduledNotification.find().sort({ scheduledTime: -1 });
     res.json(list);
   } catch (err) {
     res.status(500).json({ error: err.message });

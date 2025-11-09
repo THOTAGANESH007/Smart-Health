@@ -36,9 +36,9 @@ const PatientSelection = ({ patients, onSelect }) => {
             {/* User Header */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="bg-black text-white p-2 rounded-full">
+               {p.userId.profile ?(p.userId.profile):(<div className="bg-black text-white p-2 rounded-full">
                   <User className="w-5 h-5" />
-                </div>
+                </div>)}
                 <h4 className="font-semibold text-lg text-black">
                   {p.userId?.name || "Unnamed"}
                 </h4>
@@ -70,12 +70,8 @@ const PatientSelection = ({ patients, onSelect }) => {
                   {p.address}
                 </p>
               )}
-              {p.disease_details && (
-                <p className="flex items-center gap-2 text-sm">
-                  <ActivitySquare className="w-4 h-4 text-gray-500" />
-                  {p.disease_details}
-                </p>
-              )}
+              
+
             </div>
 
             {/* Select Button */}

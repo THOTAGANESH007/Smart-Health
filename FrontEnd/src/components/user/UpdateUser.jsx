@@ -59,17 +59,17 @@ const UpdateUser = () => {
     try {
       const token = localStorage.getItem("token");
       const formDataImage = new FormData();
-      formDataImage.append("profile", profileImage);
+      formDataImage.append("image", profileImage);
 
-      const response = await axios.post(
+      const response = await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/auth/upload-profile`,
         formDataImage,
         {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
-          },
-        }
+          },withCredentials:true
+        },
       );
 
       setMessage(

@@ -9,12 +9,13 @@ const Navigation = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: '/doctor/app-doctor', label: 'Doctor Appointments', icon: Calendar },
-    { path: '/doctor/video', label: 'Video Call', icon: Video },
+    { path: '/doctor/app-doctor', label: 'My Appointments', icon: Calendar },
+    { path: '/doctor/popup', label: 'Video Call', icon: Video },
     { path: '/doctor/pres-create', label: 'Create Prescription', icon: FileText },
     { path: '/doctor/lab-create', label: 'Create Lab Test', icon: ClipboardList },
     { path: '/doctor/lab-update', label: 'Update Lab Test', icon: ClipboardList },
-    
+    { path: '/doctor/healthcards', label: 'All Health Cards', icon: ClipboardList },
+    {path:'/doctor/myfeedback' ,label:'My FeedBacks',icon:ClipboardList}
   ];
 
   return (

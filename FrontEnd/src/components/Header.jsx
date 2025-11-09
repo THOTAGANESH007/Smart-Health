@@ -98,7 +98,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gradient-to-r from-blue-50 to-green-50 shadow-lg">
+    <header className="bg-gradient-to-r from-blue-50 to-green-50 shadow-lg ">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Brand */}
@@ -194,7 +194,7 @@ const Header = () => {
               >
                 <div className="w-10 h-10 rounded-full bg-white overflow-hidden border-2 border-white shadow-md hover:border-gray-200 transition-all">
                   <img
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop"
+                    src={JSON.parse(localStorage.getItem("user"))?.profile || '/default-profile.png'}
                     alt="User"
                     className="w-full h-full object-cover"
                   />

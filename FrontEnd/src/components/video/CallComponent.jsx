@@ -271,7 +271,7 @@ const CallComponent = () => {
     setCallEnded(true);
     setTimeout(() => {
       setCallEnded(false);
-      navigate(user?.role === "DOCTOR" ? "/doctor" : "/patient");
+      navigate(user?.role === "DOCTOR" ? "/doctor/popup" : "/patient/list");
     }, 3000);
   };
 

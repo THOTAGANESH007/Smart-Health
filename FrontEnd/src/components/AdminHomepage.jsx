@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { BarChart3, Calendar, ClipboardList, Bell, Clock, List } from 'lucide-react';
+import { BarChart3, Calendar, ClipboardList, Bell, Clock, List, Stethoscope } from 'lucide-react';
 import Header from './Header';
 
 // Navigation Component
@@ -10,10 +10,11 @@ const Navigation = () => {
 
   const navItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: BarChart3 },
-    { path: '/admin/app-admin', label: 'Admin Appointments', icon: Calendar },
-    
-    { path: '/admin/send-notification', label: 'Send Notification', icon: Bell },
-    { path: '/admin/schedule-notification', label: 'Schedule Notification', icon: Clock },
+    { path: '/admin/app-admin', label: 'All Appointments', icon: Calendar },
+     { path: '/admin/manage-doctors', label: 'Manage Doctors', icon: Stethoscope },
+     { path: '/admin/allhealthcards', label: 'All Health Cards', icon: List },
+    { path: '/admin/send-notification', label: 'Notifiy All', icon: Bell },
+    { path: '/admin/schedule-notification', label: 'Medicine Remainders', icon: Clock },
     { path: '/admin/scheduled-list', label: 'Scheduled Notifications', icon: List },
   ];
 

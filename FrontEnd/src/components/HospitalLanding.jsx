@@ -272,7 +272,7 @@ const HospitalLanding = () => {
             <p className="mb-6 text-gray-300">
               Dolor amet sit justo amet elitr clita ipsum elitr est. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
-            <div className="flex">
+            {/* <div className="flex">
               <input 
                 type="email" 
                 placeholder="Enter your email"
@@ -281,7 +281,7 @@ const HospitalLanding = () => {
               <button className="bg-pink-600 hover:bg-pink-700 px-6 py-3 rounded-r-full font-semibold transition-all">
                 SignUp
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 

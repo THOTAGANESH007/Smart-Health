@@ -64,23 +64,23 @@ export const addFeedback = async (req, res) => {
 export const getDoctorFeedback = async (req, res) => {
   try {
     const { doctorId } = req.params;
-
+console.log(doctorId)
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
     const feedbacks = await FeedBack.find({ doctorId })
-      .select("rating comments sentiment patientId appointmentId createdAt")
-      .populate("patientId", "userId name")
-      .populate("appointmentId", "scheduled_date status")
+      .select("rating comments createdAt patientId appointmentId")
+      .populate({
+        path: "patientId",
+          populate: {
+          path: "userId",
+          select: "name",
+      },})
       .sort({ createdAt: -1 });
 
     res.status(200).json({
-      doctorId,
-      doctorName: doctor.name,
-      averageRating: doctor.rating.toFixed(2),
-      feedbackCount: doctor.feedbackCount,
       feedbacks,
     });
   } catch (err) {

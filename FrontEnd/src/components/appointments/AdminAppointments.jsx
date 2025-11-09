@@ -57,12 +57,10 @@ const AdminAppointments = () => {
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-6xl bg-white border-2 border-black p-8 rounded-lg shadow-lg">
         <div className="text-center mb-6">
-          <div className="flex justify-center items-center w-16 h-16 bg-black text-white rounded-full mx-auto mb-4">
+          <div className="flex justify-center items-center w-16 h-16 bg-blue-600 text-white rounded-full mx-auto mb-4">
             <Calendar className="w-8 h-8" />
           </div>
-          <h2 className="text-3xl font-bold text-black">
-            All Appointments (Admin)
-          </h2>
+         
           <p className="text-gray-600 mt-1">
             View and update appointment statuses
           </p>

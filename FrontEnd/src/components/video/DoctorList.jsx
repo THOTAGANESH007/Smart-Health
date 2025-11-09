@@ -60,8 +60,8 @@ const DoctorList = () => {
         roomId,
         callId,
       });
-
-      navigate(`/call/${roomId}`);
+     
+      navigate(`/patient/call/${roomId}`);
     } catch (err) {
       console.error(err);
       setCallingDoctor(null);

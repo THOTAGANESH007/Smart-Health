@@ -149,6 +149,7 @@ export async function signin(req, res) {
       name: user.name,
       email: user.email,
       role: user.role,
+      profile: user.profile,
     };
 
     // Attach role-based profile ID if exists
@@ -348,7 +349,7 @@ export async function resetForgotPassword(req, res) {
 //Upload Profile Image Controller
 export async function uploadProfile(req, res) {
   try {
-    const userId = req.user; //from protect middleware
+    const userId = req.user._id; //from protect middleware
     const image = req.file; //from multer middleware
     if (!image) {
       return res
