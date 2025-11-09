@@ -2,14 +2,10 @@ import express from "express";
 import { protect, authorize } from "../middlewares/authMiddleware.js";
 import {
   addDoctorDetails,
-  addReceptionistDetails,
   createUserByAdmin,
   deleteDoctor,
-  deleteReceptionist,
   getAllDoctors,
-  getAllReceptionists,
-  getDoctorByUserId,
-  getReceptionistByUserId,
+  getAllPatientsHealthCards,
 } from "../controllers/admin.js";
 
 const adminRouter = express.Router();
