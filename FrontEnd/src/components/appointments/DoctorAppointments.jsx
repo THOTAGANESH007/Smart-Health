@@ -7,6 +7,7 @@ import {
   CheckCircle,
   AlertCircle,
   Loader,
+  FileQuestionMark,
 } from "lucide-react";
 
 const DoctorAppointments = () => {
@@ -90,7 +91,10 @@ const DoctorAppointments = () => {
             >
               <div>
                 <p className="font-semibold flex items-center gap-2">
-                  <User className="w-4 h-4" /> Patient: {a.patientId?.name}
+                  <User className="w-4 h-4" /> Patient: {a.patientId?.userId.name}
+                </p>
+                <p className="font-semibold flex items-center gap-2">
+                  <FileQuestionMark className="w-4 h-4" /> Reason: {a.message}
                 </p>
                 <p className="flex items-center gap-2 text-gray-700">
                   <Clock className="w-4 h-4" />{" "}

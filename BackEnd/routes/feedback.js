@@ -2,6 +2,7 @@ import express from "express";
 import { protect, authorize } from "../middlewares/authMiddleware.js";
 import {
   addFeedback,
+  getAllFeedbacks,
   getDoctorFeedback,
   getPatientFeedback,
 } from "../controllers/feedback.js";
@@ -26,5 +27,7 @@ feedbackRouter.get(
   authorize("PATIENT"),
   getPatientFeedback
 );
+
+feedbackRouter.get("/getAllFeedbacks", protect, getAllFeedbacks);
 
 export default feedbackRouter;

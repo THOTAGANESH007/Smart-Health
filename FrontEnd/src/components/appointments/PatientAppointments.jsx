@@ -120,9 +120,16 @@ const PatientAppointments = () => {
                     className="cursor-pointer border-2 border-gray-300 hover:border-black rounded-lg p-5 transition shadow-sm hover:shadow-md"
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="bg-black text-white p-3 rounded-full">
-                        {doc.userId?.profile || <User className="w-5 h-5" />}
-                      </div>
+                      {/* <div className="bg-black text-white p-3 rounded-full"> */}
+                        {doc.userId.profile ?(<img
+                                            src={doc.userId.profile || '/default-profile.png'}
+                                            alt="User"
+                                            className="object-cover w-13 h-13 rounded-full"
+                                          />):(<div className="bg-black text-white p-2 rounded-full">
+                                          <User className="w-7 h-7" />
+                                        </div>)}
+                        {/* <image src={doc.userId?.profile?doc.userId?.profile:<User className="w-5 h-5"} /> */}
+                      {/* </div> */}
                       <h3 className="text-lg font-bold text-black">
                         {doc.userId?.name || "Dr. Unknown"}
                       </h3>

@@ -30,6 +30,7 @@ const PatientPrescriptions = () => {
         `${baseUrl}/api/prescriptions/getAllPrescriptions/${patientId}`,
         axiosConfig
       );
+      console.log(res)
       setPrescriptions(res.data.prescriptions || []);
     } catch (err) {
       console.error(err);
@@ -46,16 +47,7 @@ const PatientPrescriptions = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-6xl bg-white border-2 border-black p-8 rounded-lg shadow-lg">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="flex justify-center items-center w-16 h-16 bg-black text-white rounded-full mx-auto mb-4">
-            <FileSearch className="w-8 h-8" />
-          </div>
-          <h2 className="text-3xl font-bold text-black">My Prescriptions</h2>
-          <p className="text-gray-600 mt-1">
-            View detailed prescriptions and download your reports
-          </p>
-        </div>
+       
 
         {/* Notifications */}
         {message && (

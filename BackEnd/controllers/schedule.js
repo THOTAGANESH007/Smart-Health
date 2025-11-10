@@ -1,24 +1,47 @@
 import ScheduledNotification from "../models/ScheduledNotification.js";
+import User from "../models/User.js";
 
 export async function createScheduledNotification(req, res) {
   try {
     const { title, message, recipients, sendToAll, scheduledTime } = req.body;
+
     const localTime = new Date(scheduledTime);
     const utcTime = new Date(localTime.getTime());
+console.log("rrr",recipients)
+    let recipientList = [];
+
+    if (sendToAll) {
+      // Fetch all users if "send to all" is true
+      const users = await User.find();
+      recipientList = users.map((user) => ({
+        user: user._id,
+        isRead: false,
+      }));
+    } else if (recipients && recipients.length > 0) {
+      // Use only specified recipients
+      recipientList = recipients.map((id) => ({
+        user: id,
+        isRead: false,
+      }));
+    } else {
+      return res.status(400).json({ error: "Recipients list is empty." });
+    }
 
     const notif = new ScheduledNotification({
       title,
       message,
-      recipients: sendToAll ? [] : recipients,
+      recipients: recipientList,
       sendToAll,
       scheduledTime: utcTime,
     });
+
     await notif.save();
     res.status(201).json({ message: "Notification scheduled successfully!" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 }
+
 
 export async function getAllScheduledNotifications(req, res) {
   try {

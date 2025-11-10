@@ -6,6 +6,7 @@ import {
   deleteNotification,
   markAllAsRead,
   sendNotification,
+  getAll,
 } from "../controllers/notifications.js";
 
 const notificationRouter = express.Router();
@@ -22,6 +23,7 @@ notificationRouter.post(
 notificationRouter.get("/", protect, getAllNotifications);
 notificationRouter.patch("/mark-read/:id", protect, markAsRead);
 notificationRouter.delete("/:id", protect, deleteNotification);
-notificationRouter.patch("/mark-all", protect, markAllAsRead);
+notificationRouter.patch("/mark-all-read", protect, markAllAsRead);
+notificationRouter.get("/get-all-notifications", protect, getAll); 
 
 export default notificationRouter;

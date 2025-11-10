@@ -22,6 +22,7 @@ const PatientLabTests = () => {
   // Retrieve patientId from localStorage (set at login)
   const user = JSON.parse(localStorage.getItem("user"));
   const patientId = user?.patientId;
+  console.log("pat",patientId)
 
   const fetchTests = async () => {
     try {
@@ -29,6 +30,7 @@ const PatientLabTests = () => {
         `${baseUrl}/api/labtests/patient/${patientId}`,
         axiosConfig
       );
+     console.log(res)
       setTests(res.data.tests || []);
     } catch (err) {
       console.error(err);

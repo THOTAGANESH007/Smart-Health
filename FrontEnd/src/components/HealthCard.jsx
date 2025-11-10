@@ -34,7 +34,7 @@ const HealthCard = () => {
 
       // Get user from localStorage
       const userStr = localStorage.getItem("user");
-      console.log(userStr)
+     
       if (!userStr) {
         setError("User not found. Please login again.");
         setLoading(false);
@@ -54,7 +54,7 @@ const HealthCard = () => {
         `${baseUrl}/api/patients/get-patient-health-card/${userId}`,
         { withCredentials: true }
       );
-      console.log(response.data);
+     
 
       if (response.data && response.data.data) {
         const patient = response.data.data;

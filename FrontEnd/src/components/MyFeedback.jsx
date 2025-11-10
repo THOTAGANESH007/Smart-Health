@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Star, Calendar, MessageSquare, User, Stethoscope } from "lucide-react";
+import { Star, Calendar, MessageSquare, User, Stethoscope, Loader } from "lucide-react";
 
 const MyFeedback = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -59,8 +59,12 @@ const MyFeedback = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64 text-gray-500 text-lg">
-        Loading your feedbacks...
+
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
+              <div className="text-center">
+                <Loader className="animate-spin text-blue-500 mx-auto mb-4" size={48} />
+                <p className="text-gray-600 text-lg">Loading your feedbacks...</p>
+              </div>
       </div>
     );
   }

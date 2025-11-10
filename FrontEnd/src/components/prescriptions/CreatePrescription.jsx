@@ -34,16 +34,7 @@ const CreatePrescription = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-start p-4">
       <div className="w-full max-w-6xl bg-white border-2 border-black p-8 rounded-lg shadow-lg">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="flex justify-center items-center w-16 h-16 bg-black text-white rounded-full mx-auto mb-4">
-            <ClipboardPlus className="w-8 h-8" />
-          </div>
-          <h2 className="text-3xl font-bold text-black">Create Prescription</h2>
-          <p className="text-gray-600 mt-1">
-            Select a patient and generate a prescription
-          </p>
-        </div>
+      
 
         {/* Alerts */}
         {message && (

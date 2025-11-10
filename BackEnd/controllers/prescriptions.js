@@ -57,7 +57,7 @@ export const getPatientPrescriptions = async (req, res) => {
 
     const prescriptions = await Prescription.find({ patientId })
       .populate("doctorId", "userId specialization name")
-      .select("prescription_date file_url medications")
+      .select("prescription_date file_url diagnosis signed medications")
       .sort({ prescription_date: -1 });
 
     res.status(200).json({ prescriptions });
@@ -107,3 +107,31 @@ export const downloadPrescription = async (req, res) => {
       .json({ message: "Error downloading prescription", error: err.message });
   }
 };
+
+
+export const getAllPrescriptions = async (req, res) => {
+  try {
+    const prescriptions = await Prescription.find()
+    .select("prescription_date diagnosis file_url signed")
+      .populate({
+        path: "patientId",
+        populate: {
+          path: "userId",
+          select: "name age gender email",
+        },
+      })
+      .populate({
+        path: "doctorId",
+        populate: {
+          path: "userId",
+          select: "name specialization email",
+        },
+      })
+      .sort({ prescription_date: -1 });
+  res.json({ prescriptions });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error fetching lab tests", error: err.message });
+  }
+}

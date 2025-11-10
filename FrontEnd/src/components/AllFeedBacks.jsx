@@ -26,7 +26,7 @@ const StarRating = ({ rating = 0, size = 'h-5 w-5' }) => {
   );
 };
 
-const DoctorFeedback = () => {
+const AllFeedBacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,17 +34,10 @@ const DoctorFeedback = () => {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const userData = JSON.parse(localStorage.getItem('user'));
-        const doctorId = userData?.doctorId;
-
-        if (!doctorId) {
-          setError('Doctor ID not found in local storage.');
-          setLoading(false);
-          return;
-        }
+       
 
         const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/feedback/doctor/${doctorId}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/feedback/getAllFeedbacks`,{withCredentials:true}
         );
         console.log(res)
         
@@ -95,6 +88,8 @@ const DoctorFeedback = () => {
           {feedbacks.map((feedback) => {
             // Safely access the patient's name with a fallback
             const patientName = feedback.patientId?.userId?.name || 'Anonymous';
+            const doctorName = feedback.doctorId?.userId?.name || 'Unknown Doctor';
+            const message = feedback.appointmentId?.message || 'Appointment'
 
             return (
               <div
@@ -106,10 +101,12 @@ const DoctorFeedback = () => {
                     <UserCircle className="h-8 w-8 text-gray-500" />
                   </div>
                   <div className='w-full'>
-                    <div className="flex justify-between items-center mb-1">
-                      <p className="font-semibold text-gray-900 text-lg">{patientName}</p>
+                    <div className="flex flex-col justify-between mb-1">
+                      <p className="font-semibold text-gray-900 text-lg">Doctor:{doctorName}</p>
+                      <p className="font-semibold text-gray-900 text-lg">Patient:{patientName}</p>
+                      <p className="font-semibold text-gray-900 text-lg">Reason:{message}</p>
                       <p className="text-sm text-gray-500">
-                        {format(new Date(feedback.createdAt), 'dd MMMM yyyy')}
+                        Given at: {format(new Date(feedback.createdAt), 'dd MMMM yyyy')}
                       </p>
                     </div>
                     <StarRating rating={feedback.rating} />
@@ -131,4 +128,4 @@ const DoctorFeedback = () => {
   );
 };
 
-export default DoctorFeedback;
+export default AllFeedBacks;

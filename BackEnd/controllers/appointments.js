@@ -35,9 +35,23 @@ export const createAppointment = async (req, res) => {
 export const getAllAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find()
-      .populate("patientId", "userId name email profile phone")
-      .populate("doctorId", "userId specialization rating profile phone")
-      .sort({ createdAt: -1 });
+    .select("message scheduled_date status")
+  .populate({
+    path: "patientId",
+    populate: {
+      path: "userId",
+      select: "name email profile phone"
+    }
+  })
+  .populate({
+    path: "doctorId",
+    populate: {
+      path: "userId",
+      select: "name email profile phone"
+    }
+  })
+  .sort({ createdAt: -1 });
+
 
     res.status(200).json({ appointments });
   } catch (error) {
@@ -52,7 +66,14 @@ export const getDoctorAppointments = async (req, res) => {
   try {
     const doctorId = req.user.doctorId;
     const appointments = await Appointment.find({ doctorId })
-      .populate("patientId", "userId name email profile phone")
+    .select("message scheduled_date status patientId")
+    .populate({
+      path: "patientId",
+      populate: {
+        path: "userId",
+        select: "name email profile phone"
+      }
+    })
       .sort({ scheduled_date: -1 });
     res.status(200).json({ appointments });
   } catch (error) {

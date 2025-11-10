@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronDown, User, LogOut, Bell, CheckCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, User, LogOut, Bell, CheckCheck, Calendar, Inbox } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,37 +7,127 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [activeTab, setActiveTab] = useState('all'); // 'all', 'notifications', 'reminders'
   const navigate = useNavigate();
 
-  // Sample notifications - replace with actual data from your API
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      message: 'Your appointment is scheduled for tomorrow at 10:00 AM',
-      time: '2 hours ago',
-      isRead: false
-    },
-    {
-      id: 2,
-      message: 'Lab results are now available',
-      time: '5 hours ago',
-      isRead: false
-    },
-    {
-      id: 3,
-      message: 'Prescription refill approved',
-      time: '1 day ago',
-      isRead: true
-    },
-    {
-      id: 4,
-      message: 'New health tip: Stay hydrated!',
-      time: '2 days ago',
-      isRead: false
-    }
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [scheduledNotifications, setScheduledNotifications] = useState([]);
+  const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
 
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  // Get current user ID
+  const getCurrentUserId = () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      return user?._id || user?.id;
+    } catch {
+      return null;
+    }
+  };
+
+  // Fetch notifications from API
+  const fetchNotifications = async () => {
+    try {
+      setIsLoadingNotifications(true);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/notifications/get-all-notifications`,
+        { withCredentials: true }
+      );
+    
+
+      if (response.data.success) {
+        setNotifications(response.data.notifications || []);
+        setScheduledNotifications(response.data.scheduledNotifications || []);
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    } finally {
+      setIsLoadingNotifications(false);
+    }
+  };
+
+  // Fetch notifications on component mount
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  // Get isRead status for scheduled notification
+  const getScheduledNotificationReadStatus = (scheduledNotification) => {
+    const currentUserId = getCurrentUserId();
+    if (!currentUserId) return true; // Default to read if no user
+
+    // Find the recipient entry for current user
+    const recipientEntry = scheduledNotification.recipients?.find(
+      (r) => r.user === currentUserId || r.user?._id === currentUserId
+    );
+
+    return recipientEntry ? recipientEntry.isRead : true;
+  };
+
+  // Calculate unread count for all notifications
+  const unreadCount = 
+    notifications.filter(n => !n.isRead).length +
+    scheduledNotifications.filter(n => n.isSent && !getScheduledNotificationReadStatus(n)).length;
+
+  // Format time ago
+  const getTimeAgo = (date) => {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    
+    let interval = seconds / 31536000;
+    if (interval > 1) return Math.floor(interval) + ' year' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+    
+    interval = seconds / 2592000;
+    if (interval > 1) return Math.floor(interval) + ' month' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+    
+    interval = seconds / 86400;
+    if (interval > 1) return Math.floor(interval) + ' day' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+    
+    interval = seconds / 3600;
+    if (interval > 1) return Math.floor(interval) + ' hour' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+    
+    interval = seconds / 60;
+    if (interval > 1) return Math.floor(interval) + ' minute' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+    
+    return 'Just now';
+  };
+
+  // Get filtered notifications based on active tab
+  const getFilteredNotifications = () => {
+    let allItems = [];
+
+    if (activeTab === 'all' || activeTab === 'notifications') {
+      allItems = [
+        ...allItems,
+        ...notifications.map(n => ({
+          ...n,
+          type: 'notification',
+          displayMessage: n.message,
+          time: getTimeAgo(n.createdAt)
+        }))
+      ];
+    }
+
+    if (activeTab === 'all' || activeTab === 'reminders') {
+      allItems = [
+        ...allItems,
+        ...scheduledNotifications
+          .filter(n => n.isSent) // Only show sent scheduled notifications
+          .map(n => ({
+            ...n,
+            type: 'reminder',
+            displayMessage: n.title ? `${n.title}: ${n.message}` : n.message,
+            time: getTimeAgo(n.scheduledTime || n.createdAt),
+            isRead: getScheduledNotificationReadStatus(n) // Add computed isRead status
+          }))
+      ];
+    }
+
+    // Sort by date (most recent first)
+    return allItems.sort((a, b) => {
+      const dateA = new Date(a.scheduledTime || a.createdAt);
+      const dateB = new Date(b.scheduledTime || b.createdAt);
+      return dateB - dateA;
+    });
+  };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -47,21 +137,55 @@ const Header = () => {
   const toggleNotification = () => {
     setIsNotificationOpen(!isNotificationOpen);
     setIsDropdownOpen(false);
+    if (!isNotificationOpen) {
+      fetchNotifications(); // Refresh notifications when opening
+    }
   };
 
-  const markAsRead = (id) => {
-    setNotifications(notifications.map(notification =>
-      notification.id === id
-        ? { ...notification, isRead: true }
-        : notification
-    ));
+  const markAsRead = async (id, type) => {
+    try {
+   
+
+      // Make API call to mark as read
+      const res = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/notifications/mark-read/${id}`,
+        {},
+        { withCredentials: true }
+      );
+     
+
+      // Refresh notifications after successful update
+      if (res.data.success) {
+        await fetchNotifications();
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+      // Refresh to sync with server state
+      fetchNotifications();
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map(notification => ({
-      ...notification,
-      isRead: true
-    })));
+  const markAllAsRead = async () => {
+    try {
+      // Make API call to mark all as read
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      setScheduledNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+
+      const res = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/notifications/mark-all-read`,
+        {},
+        { withCredentials: true }
+      );
+
+      // Refresh notifications after successful update
+      if (res.data.success) {
+        await fetchNotifications();
+      }
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+      // Refresh to sync with server state
+      fetchNotifications();
+    }
   };
 
   const handleLogout = async () => {
@@ -73,7 +197,6 @@ const Header = () => {
         {},
         { withCredentials: true }
       );
-      console.log(response);
 
       if (response.statusText) {
         console.log('Logout successful');
@@ -97,8 +220,10 @@ const Header = () => {
     setIsDropdownOpen(false);
   };
 
+  const filteredNotifications = getFilteredNotifications();
+
   return (
-    <header className="bg-gradient-to-r from-blue-50 to-green-50 shadow-lg ">
+    <header className="bg-gradient-to-r from-blue-50 to-green-50 shadow-lg">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Brand */}
@@ -131,38 +256,97 @@ const Header = () => {
                     className="fixed inset-0 z-10"
                     onClick={() => setIsNotificationOpen(false)}
                   />
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-20 overflow-hidden">
-                    <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-                      <h3 className="text-lg font-semibold text-gray-800">Notifications</h3>
-                      {unreadCount > 0 && (
+                  <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl z-20 overflow-hidden">
+                    {/* Header */}
+                    <div className="p-4 border-b border-gray-200">
+                      <div className="flex justify-between items-center mb-3">
+                        <h3 className="text-lg font-semibold text-gray-800">Notifications</h3>
+                        {unreadCount > 0 && (
+                          <button
+                            onClick={markAllAsRead}
+                            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                          >
+                            Mark all as read
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Category Tabs */}
+                      <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
                         <button
-                          onClick={markAllAsRead}
-                          className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                          onClick={() => setActiveTab('all')}
+                          className={`flex-1 flex items-center justify-center space-x-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                            activeTab === 'all'
+                              ? 'bg-white text-blue-600 shadow-sm'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
                         >
-                          Mark all as read
+                          <Inbox className="w-4 h-4" />
+                          <span>All</span>
                         </button>
-                      )}
+                        <button
+                          onClick={() => setActiveTab('notifications')}
+                          className={`flex-1 flex items-center justify-center space-x-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                            activeTab === 'notifications'
+                              ? 'bg-white text-blue-600 shadow-sm'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          <Bell className="w-4 h-4" />
+                          <span>Alerts</span>
+                        </button>
+                        <button
+                          onClick={() => setActiveTab('reminders')}
+                          className={`flex-1 flex items-center justify-center space-x-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                            activeTab === 'reminders'
+                              ? 'bg-white text-blue-600 shadow-sm'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          <Calendar className="w-4 h-4" />
+                          <span>Reminders</span>
+                        </button>
+                      </div>
                     </div>
+
+                    {/* Notification List */}
                     <div className="max-h-96 overflow-y-auto">
-                      {notifications.length > 0 ? (
-                        notifications.map((notification) => (
+                      {isLoadingNotifications ? (
+                        <div className="p-8 text-center">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                          <p className="text-gray-500 mt-2">Loading notifications...</p>
+                        </div>
+                      ) : filteredNotifications.length > 0 ? (
+                        filteredNotifications.map((notification) => (
                           <div
-                            key={notification.id}
+                            key={`${notification.type}-${notification._id}`}
                             className={`p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
                               !notification.isRead ? 'bg-blue-50' : ''
                             }`}
                           >
                             <div className="flex justify-between items-start">
                               <div className="flex-1 pr-2">
+                                <div className="flex items-center space-x-2 mb-1">
+                                  {notification.type === 'reminder' ? (
+                                    <Calendar className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                                  ) : (
+                                    <Bell className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                                  )}
+                                  <span className={`text-xs font-medium ${
+                                    notification.type === 'reminder' ? 'text-purple-600' : 'text-blue-600'
+                                  }`}>
+                                    {notification.type === 'reminder' ? 'Reminder' : 'Notification'}
+                                  </span>
+                                </div>
                                 <p className={`text-sm ${
                                   !notification.isRead ? 'font-semibold text-gray-900' : 'text-gray-700'
                                 }`}>
-                                  {notification.message}
+                                  {notification.displayMessage}
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
                               </div>
                               <button
-                                onClick={() => markAsRead(notification.id)}
+                                onClick={() => markAsRead(notification._id, notification.type)}
                                 className={`flex-shrink-0 ${
                                   notification.isRead ? 'text-green-500' : 'text-gray-400 hover:text-green-500'
                                 } transition-colors`}
@@ -175,8 +359,14 @@ const Header = () => {
                         ))
                       ) : (
                         <div className="p-8 text-center text-gray-500">
-                          <Bell className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                          <p>No notifications</p>
+                          {activeTab === 'all' ? (
+                            <Inbox className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                          ) : activeTab === 'notifications' ? (
+                            <Bell className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                          ) : (
+                            <Calendar className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                          )}
+                          <p>No {activeTab === 'all' ? '' : activeTab} yet</p>
                         </div>
                       )}
                     </div>
@@ -199,11 +389,6 @@ const Header = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                {/* <ChevronDown 
-                  className={`w-5 h-5 text-gray-700 transition-transform duration-200 ${
-                    isDropdownOpen ? 'rotate-180' : ''
-                  }`}
-                /> */}
               </button>
 
               {/* Dropdown Menu */}

@@ -40,6 +40,9 @@ import AllHealthCards from "./components/AllHealthCards";
 import UpdatePatientHealthCards from "./components/UpdatePatientHealthCards";
 import AllPatientsHealthCards from "./components/AllPatientsHealthCards";
 import DoctorFeedbacks from "./components/DoctorFeedbacks";
+import AllFeedBacks from "./components/AllFeedBacks";
+import AllLabTests from "./components/AllLabReports";
+import AllPrescriptions from "./components/AllPrescriptions";
 
 function App() {
   return (
@@ -69,6 +72,9 @@ function App() {
           <Route path="lab-create" element={<CreateLabTest />} />
           <Route path="popup" element={<IncomingCallPopup />} />
            <Route path="myfeedback" element={<DoctorFeedbacks />} />
+           <Route path="allreports" element={<AllLabTests />} />
+           <Route path="allprescriptions" element={<AllPrescriptions />} />
+
           {/* <Route path="myappointments" element={<GetPatientAppointments />} /> */}
         </Route>
 
@@ -76,7 +82,10 @@ function App() {
           <Route path="dashboard" element={<AnalyticsDashboard />} />
           <Route path="app-admin" element={<AdminAppointments />} />
           <Route path="allhealthcards" element={<AllPatientsHealthCards />} />
+           <Route path="all-feedbacks" element={<AllFeedBacks />} />
           <Route path="manage-doctors" element={<ManageDoctors />} />
+          <Route path="allreports" element={<AllLabTests />} />
+           <Route path="allprescriptions" element={<AllPrescriptions />} />
           <Route
             path="send-notification"
             element={<AdminNotificationSender />}

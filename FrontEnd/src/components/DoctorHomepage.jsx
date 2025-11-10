@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Calendar, Video, FileText, ClipboardList } from 'lucide-react';
+import { Calendar, Video, FileText, ClipboardList, ClipboardPlus, List, FlaskConical, TestTubeDiagonal, MessageCircle } from 'lucide-react';
 import Header from './Header';
 
 // Navigation Component
@@ -12,10 +12,13 @@ const Navigation = () => {
     { path: '/doctor/app-doctor', label: 'My Appointments', icon: Calendar },
     { path: '/doctor/popup', label: 'Video Call', icon: Video },
     { path: '/doctor/pres-create', label: 'Create Prescription', icon: FileText },
-    { path: '/doctor/lab-create', label: 'Create Lab Test', icon: ClipboardList },
-    { path: '/doctor/lab-update', label: 'Update Lab Test', icon: ClipboardList },
-    { path: '/doctor/healthcards', label: 'All Health Cards', icon: ClipboardList },
-    {path:'/doctor/myfeedback' ,label:'My FeedBacks',icon:ClipboardList}
+    { path: '/doctor/lab-create', label: 'Create Lab Test', icon: FlaskConical },
+    { path: '/doctor/lab-update', label: 'Update Lab Test', icon: TestTubeDiagonal },
+    {path: '/doctor/myfeedback' ,label:'My FeedBacks',icon: MessageCircle},
+    {path: '/doctor/allreports' ,label:'All Lab Reports',icon: ClipboardPlus},
+    {path:'/doctor/allprescriptions' ,label:'All Prescriptions',icon: ClipboardList},
+    { path: '/doctor/healthcards', label: 'All Health Cards', icon: List },
+
   ];
 
   return (
@@ -54,12 +57,12 @@ const DoctorHomepage = () => {
       
       <div className="flex flex-1">
         {/* Left half - Navigation */}
-        <div className="w-1/3 overflow-auto">
+        <div className="w-2/10 overflow-auto">
           <Navigation />
         </div>
         
         {/* Right half - Dynamic Content (Outlet renders nested routes here) */}
-        <div className="w-2/3 overflow-auto">
+        <div className="w-8/10 overflow-auto">
           <div className="bg-gradient-to-br from-blue-50 to-green-50 h-full p-8">
             <Outlet />
           </div>

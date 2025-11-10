@@ -64,7 +64,6 @@ export const addFeedback = async (req, res) => {
 export const getDoctorFeedback = async (req, res) => {
   try {
     const { doctorId } = req.params;
-console.log(doctorId)
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
@@ -118,6 +117,39 @@ export const getPatientFeedback = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Error fetching patient feedback",
+      error: err.message,
+    });
+  }
+};
+
+
+export const getAllFeedbacks = async (req, res) => {
+  try {
+
+    const feedbacks = await FeedBack.find({})
+      .select("rating comments createdAt patientId doctorId appointmentId")
+      .populate("appointmentId","message scheduled_date status")
+      .populate({
+        path: "patientId",
+          populate: {
+          path: "userId",
+          select: "name",
+      },})
+      .populate({
+      path:"doctorId",
+        populate:{
+          path:"userId",
+          select:"name",
+        }
+    })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      feedbacks,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching doctor feedback",
       error: err.message,
     });
   }

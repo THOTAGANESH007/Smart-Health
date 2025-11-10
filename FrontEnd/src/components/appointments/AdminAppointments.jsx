@@ -7,6 +7,8 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
+  MessageCirclePlus,
+  MessageSquare,
 } from "lucide-react";
 
 const AdminAppointments = () => {
@@ -24,6 +26,7 @@ const AdminAppointments = () => {
         `${baseUrl}/api/appointments/getAllAppointments`,
         axiosConfig
       );
+      console.log(res.data.appointments);
       setAppointments(res.data.appointments || []);
     } catch {
       setError("Failed to load appointments");
@@ -87,11 +90,15 @@ const AdminAppointments = () => {
             >
               <div>
                 <p className="font-semibold flex items-center gap-2">
-                  <User className="w-4 h-4" /> Patient: {a.patientId?.name}
+                  <User className="w-4 h-4" /> Patient: {a.patientId?.userId?.name}
                 </p>
                 <p className="flex items-center gap-2 text-gray-700">
                   <Stethoscope className="w-4 h-4" /> Doctor:{" "}
-                  {a.doctorId?.userId}
+                  {a.doctorId?.userId?.name}
+                </p>
+                <p className="flex items-center gap-2 text-gray-700">
+                  <MessageSquare className="w-4 h-4" /> Message:{" "}
+                  {a.message}
                 </p>
                 <p className="flex items-center gap-2 text-gray-600">
                   <Clock className="w-4 h-4" />{" "}

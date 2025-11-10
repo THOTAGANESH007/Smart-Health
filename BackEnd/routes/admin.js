@@ -6,6 +6,7 @@ import {
   deleteDoctor,
   getAllDoctors,
   getAllPatientsHealthCards,
+  updateDoctor,
 } from "../controllers/admin.js";
 
 const adminRouter = express.Router();
@@ -35,4 +36,5 @@ adminRouter.get(
   getAllPatientsHealthCards
 );
 
+adminRouter.patch("/update-doctor/:doctorId", protect, authorize("ADMIN"),updateDoctor);
 export default adminRouter;

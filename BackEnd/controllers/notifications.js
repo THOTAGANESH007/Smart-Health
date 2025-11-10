@@ -1,6 +1,7 @@
 import Notification from "../models/Notification.js";
 import User from "../models/User.js";
 import admin from "../config/firebaseAdmin.js";
+import ScheduledNotification from "../models/ScheduledNotification.js";
 
 // export const sendNotification = async (req, res) => {
 //   try {
@@ -109,26 +110,40 @@ export const getAllNotifications = async (req, res) => {
   }
 };
 
-// Mark a notification as read
 export const markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
-    const notification = await Notification.findByIdAndUpdate(
-      id,
-      { isRead: true },
-      { new: true }
-    );
+    const userId = req.user._id;
 
-    if (!notification)
-      return res.status(404).json({ message: "Notification not found" });
+    
 
-    res
-      .status(200)
-      .json({ message: "Notification marked as read", notification });
+    const isInNotification = await Notification.findOne({ _id: id, userId });
+    const isInScheduledNotification = await ScheduledNotification.findOne({
+      _id: id,
+      recipients: { $elemMatch: { user: userId } },
+    });
+
+    if (isInNotification) {
+      await Notification.findByIdAndUpdate(id, { isRead: true });
+      return res
+        .status(200)
+        .json({ success: true, message: "Notification marked as read" });
+    }
+
+    if (isInScheduledNotification) {
+      await ScheduledNotification.updateOne(
+        { _id: id, "recipients.user": userId },
+        { $set: { "recipients.$.isRead": true } }
+      );
+      return res
+        .status(200)
+        .json({ success: true, message: "Scheduled notification marked as read" });
+    }
+
+    return res.status(404).json({ success: false, message: "Notification not found" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error marking notification", error: err.message });
+    console.error("Error marking notification as read:", err);
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
   }
 };
 
@@ -153,11 +168,58 @@ export const deleteNotification = async (req, res) => {
 export const markAllAsRead = async (req, res) => {
   try {
     const userId = req.user._id;
-    await Notification.updateMany({ userId, isRead: false }, { isRead: true });
+    await Notification.updateMany(
+      { userId, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    // Update all scheduled notifications (recipients array)
+    await ScheduledNotification.updateMany(
+      { "recipients.user": userId, "recipients.isRead": false },
+      { $set: { "recipients.$[elem].isRead": true } },
+      { arrayFilters: [{ "elem.user": userId }] }
+    );
+
     res.status(200).json({ message: "All notifications marked as read" });
   } catch (err) {
     res
       .status(500)
       .json({ message: "Error updating notifications", error: err.message });
+  }
+};
+
+
+export const getAll = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Fetch regular notifications (user-specific)
+    const notifications = await Notification.find({ userId })
+      .sort({ createdAt: -1 })
+      .select("message isRead createdAt");
+
+    // Fetch scheduled notifications (global + user-specific)
+    const scheduledNotifications = await ScheduledNotification.find({
+      $or: [
+        { sendToAll: true },   // for everyone
+        { "recipients.user": userId } // if user's ID is in recipients array
+      ],
+    })
+      .sort({ scheduledTime: -1 })
+      .select("title message sendToAll recipients scheduledTime isSent createdAt");
+
+    // Send both separately
+    res.status(200).json({
+      success: true,
+      notifications,
+      scheduledNotifications,
+    });
+  } catch (err) {
+    console.error("Error fetching notifications:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching notifications",
+      error: err.message,
+    });
   }
 };

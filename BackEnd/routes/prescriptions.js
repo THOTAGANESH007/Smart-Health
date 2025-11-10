@@ -3,6 +3,7 @@ import { protect } from "../middlewares/authMiddleware.js";
 import {
   createPrescription,
   downloadPrescription,
+  getAllPrescriptions,
   // downloadPrescription,
   getPatientPrescriptions,
   getPrescriptionById,
@@ -32,5 +33,8 @@ prescriptionRouter.get(
   protect,
   downloadPrescription
 );
+
+// Get All Prescriptions
+prescriptionRouter.get("/all", protect, getAllPrescriptions);
 
 export default prescriptionRouter;

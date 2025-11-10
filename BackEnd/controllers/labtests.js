@@ -85,7 +85,7 @@ export const getPatientLabTests = async (req, res) => {
 
     if (!tests || tests.length === 0) {
       return res
-        .status(404)
+        
         .json({ message: "No lab tests found for this patient" });
     }
 
@@ -103,6 +103,7 @@ export const getLabTestById = async (req, res) => {
   try {
     const { labTestId } = req.params;
     const labTest = await LabTest.findById(labTestId)
+      .select("test_date diagnosis test_results remarks status file_url")
       .populate("patientId", "userId name age gender")
       .populate("doctorId", "userId specialization");
 
@@ -137,6 +138,7 @@ export const downloadLabReport = async (req, res) => {
 export const getAllLabTests = async (req, res) => {
   try {
     const tests = await LabTest.find()
+      .select("test_date diagnosis test_results remarks status file_url")
       .populate({
         path: "patientId",
         populate: {
@@ -153,7 +155,7 @@ export const getAllLabTests = async (req, res) => {
       })
       .sort({ test_date: -1 });
 
-    res.status(200).json({ tests });
+    res.json({ tests });
   } catch (err) {
     res
       .status(500)

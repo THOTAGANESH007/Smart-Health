@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Calendar, Clock, MessageCircle, User, Star, X } from "lucide-react";
+import { Calendar, Clock, MessageCircle, User, Star, X, Loader } from "lucide-react";
 
 const GetPatientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -104,8 +104,12 @@ const GetPatientAppointments = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64 text-gray-500 text-lg">
-        Loading appointments...
+      
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
+              <div className="text-center">
+                <Loader className="animate-spin text-blue-500 mx-auto mb-4" size={48} />
+                <p className="text-gray-600 text-lg">Loading appointments...</p>
+              </div>
       </div>
     );
   }

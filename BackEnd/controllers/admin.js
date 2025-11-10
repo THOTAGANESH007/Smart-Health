@@ -112,3 +112,33 @@ export const getAllPatientsHealthCards = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
+export const updateDoctor = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const { specialization, experience_years, consultation_type } = req.body;
+    
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    // Update doctor details
+    if (specialization) doctor.specialization = specialization;
+    if (experience_years) doctor.experience_years = experience_years;
+    if (consultation_type) doctor.consultation_type = consultation_type;
+
+    await doctor.save();
+
+    res.status(200).json({
+      message: "Doctor details updated successfully",
+      doctor,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error updating doctor details",
+      error: err.message,
+    });
+  }
+};

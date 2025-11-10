@@ -11,7 +11,7 @@ const NotificationPermission = ({ onTokenReceived }) => {
           const token = await requestForToken();
           if (token) onTokenReceived(token);
         } else {
-          // console.warn("🔕 Notification permission not granted.");
+          console.warn("🔕 Notification permission not granted.");
         }
       } catch (err) {
         console.error("Error requesting notification permission:", err);

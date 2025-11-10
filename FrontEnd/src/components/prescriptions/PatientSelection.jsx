@@ -36,7 +36,14 @@ const PatientSelection = ({ patients, onSelect }) => {
             {/* User Header */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-               {p.userId.profile ?(p.userId.profile):(<div className="bg-black text-white p-2 rounded-full">
+
+                 
+                
+               {p.userId.profile ?(<img
+                    src={p.userId.profile || '/default-profile.png'}
+                    alt="User"
+                    className="object-cover w-10 h-10 rounded-full"
+                  />):(<div className="bg-black text-white p-2 rounded-full">
                   <User className="w-5 h-5" />
                 </div>)}
                 <h4 className="font-semibold text-lg text-black">
