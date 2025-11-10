@@ -10,7 +10,9 @@ import {
   AlertCircle,
   Camera,
   Upload,
+  ArrowLeft, // Import the back icon
 } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // Assuming you are using react-router-dom
 
 const UpdateUser = () => {
   const [formData, setFormData] = useState({
@@ -25,6 +27,7 @@ const UpdateUser = () => {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,8 +71,9 @@ const UpdateUser = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
-          },withCredentials:true
-        },
+          },
+          withCredentials: true,
+        }
       );
 
       setMessage(
@@ -161,7 +165,15 @@ const UpdateUser = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
-        <div className="bg-white border-2 border-black p-8 rounded-lg shadow-lg">
+        <div className="bg-white border-2 border-black p-8 rounded-lg shadow-lg relative">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)} // Go back to the previous page
+            className="absolute top-4 left-4 text-black hover:text-gray-700 transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+
           <div className="mb-6">
             <div className="flex items-center justify-center w-16 h-16 bg-black text-white rounded-full mx-auto mb-4">
               <User className="w-8 h-8" />
