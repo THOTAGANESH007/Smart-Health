@@ -1,26 +1,25 @@
 import ScheduledNotification from "../models/ScheduledNotification.js";
 import User from "../models/User.js";
-
+import mongoose from "mongoose";
 export async function createScheduledNotification(req, res) {
   try {
     const { title, message, recipients, sendToAll, scheduledTime } = req.body;
 
     const localTime = new Date(scheduledTime);
     const utcTime = new Date(localTime.getTime());
-console.log("rrr",recipients)
     let recipientList = [];
 
     if (sendToAll) {
       // Fetch all users if "send to all" is true
-      const users = await User.find();
+      const users = await User.find({ role: "PATIENT" }, "_id");
       recipientList = users.map((user) => ({
-        user: user._id,
+        user: new mongoose.Types.ObjectId(user._id), // ensure true ObjectId
         isRead: false,
       }));
     } else if (recipients && recipients.length > 0) {
       // Use only specified recipients
       recipientList = recipients.map((id) => ({
-        user: id,
+        user: new mongoose.Types.ObjectId(id),
         isRead: false,
       }));
     } else {
@@ -42,10 +41,16 @@ console.log("rrr",recipients)
   }
 }
 
-
 export async function getAllScheduledNotifications(req, res) {
   try {
-    const list = await ScheduledNotification.find().sort({ scheduledTime: -1 });
+    const list = await ScheduledNotification.find()
+      .select("sendToAll recipients scheduledTime isSent title message")
+      .populate({
+        path: "recipients.user",
+        model: "User", // explicitly specify the model
+        select: "name email phone role", // fields to show
+      })
+      .sort({ scheduledTime: -1 });
     res.json(list);
   } catch (err) {
     res.status(500).json({ error: err.message });

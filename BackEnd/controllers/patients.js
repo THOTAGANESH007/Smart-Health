@@ -106,7 +106,9 @@ export async function deletePatient(req, res) {
 // Get all users
 export async function getAllUsers(req, res) {
   try {
-    const patients = await User.find().select("_id name email phone role");
+    const patients = await User.find({ role: "PATIENT" }).select(
+      "_id name email phone role"
+    );
     res.status(200).json(patients);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -116,7 +118,7 @@ export async function getAllUsers(req, res) {
 // Get Patient Health Card
 export async function getPatientHealthCard(req, res) {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
 
     const patient = await Patient.findById(id)
       .select("age gender address disease_details blood_group userId")

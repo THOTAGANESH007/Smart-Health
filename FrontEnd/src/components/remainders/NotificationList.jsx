@@ -35,18 +35,6 @@ const NotificationList = () => {
     fetchNotifications();
   }, []);
 
-  // Helper function to convert UTC date to IST for display
-  const toIST = (utcDate) => {
-    // The getTimezoneOffset() returns the difference between UTC and the user's local time in minutes.
-    // We convert it to milliseconds to counteract the browser's automatic timezone conversion.
-    const localTimezoneOffset = utcDate.getTimezoneOffset() * 60 * 1000;
-    // IST is 5 hours and 30 minutes ahead of UTC.
-    const istOffset = 5.5 * 60 * 60 * 1000;
-    // By adding both offsets to the original UTC time, we get a new date object
-    // that will display the correct IST time when formatted.
-    return new Date(utcDate.getTime() + istOffset + localTimezoneOffset);
-  };
-
   return (
     <div className="max-w-4xl mx-auto mt-10 p-4">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
@@ -60,16 +48,25 @@ const NotificationList = () => {
       ) : (
         <div className="space-y-4">
           {notifications.map((notif) => {
-            const scheduledTimeUTC = new Date(notif.scheduledTime);
-            const displayDate = toIST(scheduledTimeUTC);
+            const utcTime = new Date(
+              new Date(notif.scheduledTime).getTime() - 5.5 * 60 * 60 * 1000
+            );
+
+            // Display either "ALL" or recipient names
+            const recipientDisplay = notif.sendToAll
+              ? "ALL"
+              : notif.recipients
+                  ?.map((r) => r?.user?.name)
+                  .filter(Boolean)
+                  .join(", ") || "No recipients";
 
             return (
               <div
                 key={notif._id}
                 className="bg-white p-5 rounded-xl shadow-md transition-shadow duration-300 hover:shadow-lg flex items-center justify-between"
               >
-                <div className="flex items-center">
-                  <div className="mr-4">
+                <div className="flex items-start">
+                  <div className="mr-4 mt-1">
                     {notif.isSent ? (
                       <CheckCircle2 className="text-green-500 h-6 w-6" />
                     ) : (
@@ -77,10 +74,23 @@ const NotificationList = () => {
                     )}
                   </div>
                   <div>
-                    <p className="font-semibold text-lg text-gray-800">{notif.title}</p>
+                    <p className="text-sm text-gray-500 font-semibold mb-1">
+                      {recipientDisplay}
+                    </p>
+                    <p className="font-semibold text-lg text-gray-800">
+                      {notif.title}
+                    </p>
                     <p className="text-gray-600">{notif.message}</p>
                     <p className="text-sm text-gray-500 mt-1">
-                      {format(displayDate, "dd MMM yyyy, hh:mm a")}
+                      {/* {format(displayDate, "dd MMM yyyy, hh:mm a")} */}
+                      {utcTime.toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
                     </p>
                   </div>
                 </div>

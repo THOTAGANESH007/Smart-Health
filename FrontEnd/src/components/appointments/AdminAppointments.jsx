@@ -63,7 +63,7 @@ const AdminAppointments = () => {
           <div className="flex justify-center items-center w-16 h-16 bg-blue-600 text-white rounded-full mx-auto mb-4">
             <Calendar className="w-8 h-8" />
           </div>
-         
+
           <p className="text-gray-600 mt-1">
             View and update appointment statuses
           </p>
@@ -90,15 +90,15 @@ const AdminAppointments = () => {
             >
               <div>
                 <p className="font-semibold flex items-center gap-2">
-                  <User className="w-4 h-4" /> Patient: {a.patientId?.userId?.name}
+                  <User className="w-4 h-4" /> Patient:{" "}
+                  {a.patientId?.userId?.name}
                 </p>
                 <p className="flex items-center gap-2 text-gray-700">
                   <Stethoscope className="w-4 h-4" /> Doctor:{" "}
                   {a.doctorId?.userId?.name}
                 </p>
                 <p className="flex items-center gap-2 text-gray-700">
-                  <MessageSquare className="w-4 h-4" /> Message:{" "}
-                  {a.message}
+                  <MessageSquare className="w-4 h-4" /> Message: {a.message}
                 </p>
                 <p className="flex items-center gap-2 text-gray-600">
                   <Clock className="w-4 h-4" />{" "}
@@ -113,7 +113,6 @@ const AdminAppointments = () => {
               >
                 <option value="PENDING">PENDING</option>
                 <option value="CONFIRMED">CONFIRMED</option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
                 <option value="COMPLETED">COMPLETED</option>
                 <option value="CANCELLED">CANCELLED</option>
               </select>
