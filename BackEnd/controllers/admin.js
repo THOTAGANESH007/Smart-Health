@@ -56,6 +56,8 @@ export const addDoctorDetails = async (req, res) => {
       consultation_type,
     });
 
+    await User.updateOne({ _id: userId }, { doctorId: doctor._id });
+
     res.status(201).json({
       message: "Doctor details added successfully",
       doctor,
@@ -113,12 +115,11 @@ export const getAllPatientsHealthCards = async (req, res) => {
   }
 };
 
-
 export const updateDoctor = async (req, res) => {
   try {
     const { doctorId } = req.params;
     const { specialization, experience_years, consultation_type } = req.body;
-    
+
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });

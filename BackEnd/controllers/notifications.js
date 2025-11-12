@@ -41,7 +41,7 @@ export const sendNotification = async (req, res) => {
     let users = [];
 
     if (recipients === "all") {
-      users = await User.find({}, "_id fcmToken name");
+      users = await User.find({ role: { $ne: "ADMIN" } }, "_id fcmToken name");
     } else {
       users = await User.find(
         { _id: { $in: recipients } },
@@ -115,8 +115,6 @@ export const markAsRead = async (req, res) => {
     const { id } = req.params;
     const userId = req.user._id;
 
-    
-
     const isInNotification = await Notification.findOne({ _id: id, userId });
     const isInScheduledNotification = await ScheduledNotification.findOne({
       _id: id,
@@ -137,13 +135,20 @@ export const markAsRead = async (req, res) => {
       );
       return res
         .status(200)
-        .json({ success: true, message: "Scheduled notification marked as read" });
+        .json({
+          success: true,
+          message: "Scheduled notification marked as read",
+        });
     }
 
-    return res.status(404).json({ success: false, message: "Notification not found" });
+    return res
+      .status(404)
+      .json({ success: false, message: "Notification not found" });
   } catch (err) {
     console.error("Error marking notification as read:", err);
-    res.status(500).json({ success: false, message: "Server error", error: err.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err.message });
   }
 };
 
@@ -188,7 +193,6 @@ export const markAllAsRead = async (req, res) => {
   }
 };
 
-
 export const getAll = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -201,12 +205,14 @@ export const getAll = async (req, res) => {
     // Fetch scheduled notifications (global + user-specific)
     const scheduledNotifications = await ScheduledNotification.find({
       $or: [
-        { sendToAll: true },   // for everyone
-        { "recipients.user": userId } // if user's ID is in recipients array
+        { sendToAll: true }, // for everyone
+        { "recipients.user": userId }, // if user's ID is in recipients array
       ],
     })
       .sort({ scheduledTime: -1 })
-      .select("title message sendToAll recipients scheduledTime isSent createdAt");
+      .select(
+        "title message sendToAll recipients scheduledTime isSent createdAt"
+      );
 
     // Send both separately
     res.status(200).json({

@@ -155,7 +155,6 @@ export async function signin(req, res) {
     } else if (user.role === "RECEPTIONIST" && user.receptionistId) {
       userResponse.receptionistId = user.receptionistId;
     }
-
     // Send response
     res.json({
       message: "Login successful",
@@ -169,7 +168,7 @@ export async function signin(req, res) {
 // Signout
 export async function signout(req, res) {
   try {
-   // console.log("Before clearing:", req.cookies);
+    // console.log("Before clearing:", req.cookies);
 
     res.clearCookie("auth_token");
 
@@ -180,7 +179,6 @@ export async function signout(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
-
 
 //Forgot Password Controller
 export async function forgotPassword(req, res) {
