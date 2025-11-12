@@ -136,12 +136,7 @@ export async function signin(req, res) {
     );
 
     // Store token in HTTP-only cookie
-    res.cookie("auth_token", token, {
-      httpOnly: true, // prevents JavaScript access
-      sameSite: "Lax", // prevent CSRF partially
-      secure: process.env.NODE_ENV === "production", // only over HTTPS in prod
-      maxAge: 7 * 60 * 60 * 1000, // 7 hours
-    });
+    res.cookie("auth_token", token);
 
     // Prepare response object with role-based ID
     const userResponse = {
@@ -176,12 +171,7 @@ export async function signout(req, res) {
   try {
    // console.log("Before clearing:", req.cookies);
 
-    res.clearCookie("auth_token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/", // MUST match cookie path
-    });
+    res.clearCookie("auth_token");
 
     //console.log("After clearing:", req.cookies);
     res.status(200).json({ message: "Signout successful" });
